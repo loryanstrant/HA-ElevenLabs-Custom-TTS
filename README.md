@@ -1,5 +1,8 @@
 # HA-ElevenLabs-custom-TTS
 
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
+[![GitHub release](https://img.shields.io/github/release/loryanstrant/HA-Azure-AI-Tasks.svg)](https://github.com/loryanstrant/HA-Azure-AI-Tasks/releases/)
+
 An ElevenLabs TTS integration for Home Assistant that allows for custom options to be passed in actions, not just the integration settings.
 
 This custom component provides two main services:
@@ -7,6 +10,26 @@ This custom component provides two main services:
 2. **Generate Voice** - Generate speech with full control over parameters
 
 ## Installation
+
+### Via HACS (Recommended)
+
+1. Open HACS in your Home Assistant instance
+2. Go to "Integrations"
+3. Click the three dots menu and select "Custom repositories"
+4. Add `https://github.com/loryanstrant/HA-ElevenLabs-Custom-TTS` as repository
+5. Set category to "Integration"
+6. Click "Add"
+7. Find "ElevenLabs Custom TTS" in the integration list and install it
+8. Restart Home Assistant
+9. Go to Configuration > Integrations
+10. Click "Add Integration" and search for "ElevenLabs Custom TTS"
+11. Enter your ElevenLabs API key
+
+Or replace steps 1-6 with this:
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=loryanstrant&repository=HA-ElevenLabs-Custom-TTS&category=integration)
+
+### Manual Installation
 
 1. Copy the `custom_components/elevenlabs_custom_tts` folder to your Home Assistant `custom_components` directory
 2. Restart Home Assistant
@@ -95,3 +118,20 @@ The generate_voice service returns:
 - Home Assistant 2023.1 or later
 - ElevenLabs API key
 - Internet connection for API calls
+
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Development Approach
+<img width="256" height="256" alt="Vibe Coding with GitHub Copilot 256x256" src="https://github.com/user-attachments/assets/bb41d075-6b3e-4f2b-a88e-94b2022b5d4f" />
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+If you encounter any issues, please report them on the [GitHub Issues page](https://github.com/loryanstrant/HA-ElevenLabs-Custom-TTS/issues).
