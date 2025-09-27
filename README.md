@@ -1,7 +1,7 @@
 # HA-ElevenLabs-custom-TTS
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
-[![GitHub release](https://img.shields.io/github/release/loryanstrant/HA-Azure-AI-Tasks.svg)](https://github.com/loryanstrant/HA-Azure-AI-Tasks/releases/)
+[![GitHub release](https://img.shields.io/github/release/loryanstrant/HA-ElevenLabs-Custom-TTS.svg)](https://github.com/loryanstrant/HA-ElevenLabs-Custom-TTS/releases/)
 
 An ElevenLabs TTS integration for Home Assistant that allows for custom options to be passed in actions, not just the integration settings.
 
