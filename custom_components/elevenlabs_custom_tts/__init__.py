@@ -147,6 +147,7 @@ async def _async_register_services(hass: HomeAssistant, client: AsyncElevenLabs)
             similarity_boost=similarity_boost,
             style=style,
             use_speaker_boost=use_speaker_boost,
+            speed=speed,
         )
         
         try:
@@ -158,23 +159,8 @@ async def _async_register_services(hass: HomeAssistant, client: AsyncElevenLabs)
                 "voice_settings": voice_settings,
             }
             
-            # Try to add speed parameter if supported
-            # Note: Speed parameter support depends on ElevenLabs SDK version and model
-            if speed != 1.0:
-                try:
-                    # Attempt to include speed parameter
-                    convert_params["speed"] = speed
-                    audio_generator = client.text_to_speech.convert(**convert_params)
-                except TypeError:
-                    # If speed parameter is not supported, fall back without it
-                    _LOGGER.warning(
-                        "Speed parameter (%s) is not supported in current ElevenLabs SDK version. "
-                        "Generating with default speed.", speed
-                    )
-                    convert_params.pop("speed", None)
-                    audio_generator = client.text_to_speech.convert(**convert_params)
-            else:
-                audio_generator = client.text_to_speech.convert(**convert_params)
+            # Generate audio with speed parameter now properly included in voice_settings
+            audio_generator = client.text_to_speech.convert(**convert_params)
             
             # Collect all audio bytes
             audio_bytes = b"".join([chunk async for chunk in audio_generator])
@@ -214,7 +200,7 @@ async def _async_register_services(hass: HomeAssistant, client: AsyncElevenLabs)
                         {
                             "entity_id": media_player_entity,
                             "media_content_id": f"file://{temp_path}",
-                            "media_content_type": "music",
+                            "media_content_type": "audio/mpeg",
                         },
                         blocking=False,
                     )

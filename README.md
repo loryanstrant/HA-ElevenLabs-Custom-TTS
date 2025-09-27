@@ -96,7 +96,7 @@ data:
   stability: 0.5  # Optional, default: 0.5 (0.0-1.0)
   similarity_boost: 0.75  # Optional, default: 0.75 (0.0-1.0)
   style: 0.0  # Optional, default: 0.0 (0.0-1.0)
-  speed: 1.0  # Optional, default: 1.0 (0.25-4.0) - Note: Not supported in current SDK
+  speed: 1.0  # Optional, default: 1.0 (0.25-4.0)
   use_speaker_boost: true  # Optional, default: true
   output_path: "/config/www/tts_output.mp3"  # Optional, saves to file if provided
 ```
@@ -209,7 +209,7 @@ automation:
 - **stability** (optional): Voice stability (0.0-1.0, default: 0.5)
 - **similarity_boost** (optional): Similarity boost (0.0-1.0, default: 0.75)
 - **style** (optional): Voice style (0.0-1.0, default: 0.0)
-- **speed** (optional): Speech speed multiplier (0.25-4.0, default: 1.0) *Note: Not currently supported by ElevenLabs SDK*
+- **speed** (optional): Speech speed multiplier (0.25-4.0, default: 1.0)
 - **use_speaker_boost** (optional): Enable speaker boost (default: true)
 - **output_path** (optional): File path to save audio file
 - **media_player_entity** (optional): Send audio directly to media player entity
