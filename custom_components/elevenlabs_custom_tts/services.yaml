@@ -1,7 +1,26 @@
 get_voices:
   name: Get Voices
-  description: Retrieve all available voices from ElevenLabs API
-  fields: {}
+  description: Retrieve all available voices from ElevenLabs API with optional filtering
+  fields:
+    voice_type:
+      name: Voice Type
+      description: Filter voices by type/category
+      required: false
+      example: "premade"
+      selector:
+        select:
+          options:
+            - "premade"
+            - "cloned"
+            - "generated"
+            - "professional"
+    search_text:
+      name: Search Text
+      description: Search for voices by name, description, or labels
+      required: false
+      example: "british"
+      selector:
+        text:
 
 generate_voice:
   name: Generate Voice
@@ -92,3 +111,11 @@ generate_voice:
       example: "/config/www/tts_output.mp3"
       selector:
         text:
+    media_player_entity:
+      name: Media Player Entity
+      description: Send audio directly to a media player entity instead of saving to file
+      required: false
+      example: "media_player.living_room_speaker"
+      selector:
+        entity:
+          domain: media_player
