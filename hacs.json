@@ -1,0 +1,7 @@
+{
+  "name": "ElevenLabs Custom TTS",
+  "description": "An ElevenLabs TTS integration for Home Assistant that allows for custom options to be passed in actions, not just the integration settings.",
+  "render_readme": true,
+  "domains": ["elevenlabs_custom_tts"],
+  "homeassistant": "2023.1.0"
+}

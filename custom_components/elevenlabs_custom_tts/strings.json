@@ -1,0 +1,68 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ElevenLabs Custom TTS",
+        "description": "Configure your ElevenLabs API key",
+        "data": {
+          "api_key": "API Key"
+        }
+      }
+    },
+    "error": {
+      "invalid_api_key": "Invalid API key. Please check your ElevenLabs API key.",
+      "unknown": "Unknown error occurred"
+    },
+    "abort": {
+      "already_configured": "ElevenLabs Custom TTS is already configured with this API key"
+    }
+  },
+  "services": {
+    "get_voices": {
+      "name": "Get Voices",
+      "description": "Retrieve all available voices from ElevenLabs API"
+    },
+    "generate_voice": {
+      "name": "Generate Voice",
+      "description": "Generate speech using ElevenLabs TTS with custom options",
+      "fields": {
+        "text": {
+          "name": "Text",
+          "description": "Text to convert to speech"
+        },
+        "model_id": {
+          "name": "Model ID",
+          "description": "ElevenLabs model ID to use"
+        },
+        "voice_id": {
+          "name": "Voice ID",
+          "description": "ElevenLabs voice ID to use"
+        },
+        "stability": {
+          "name": "Stability",
+          "description": "Voice stability setting (0.0-1.0)"
+        },
+        "similarity_boost": {
+          "name": "Similarity Boost",
+          "description": "Voice similarity boost setting (0.0-1.0)"
+        },
+        "style": {
+          "name": "Style",
+          "description": "Voice style setting (0.0-1.0)"
+        },
+        "speed": {
+          "name": "Speed",
+          "description": "Speech speed multiplier (0.25-4.0)"
+        },
+        "use_speaker_boost": {
+          "name": "Use Speaker Boost",
+          "description": "Whether to use speaker boost"
+        },
+        "output_path": {
+          "name": "Output Path",
+          "description": "File path to save the generated audio"
+        }
+      }
+    }
+  }
+}

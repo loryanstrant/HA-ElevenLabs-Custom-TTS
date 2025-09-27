@@ -1,0 +1,94 @@
+get_voices:
+  name: Get Voices
+  description: Retrieve all available voices from ElevenLabs API
+  fields: {}
+
+generate_voice:
+  name: Generate Voice
+  description: Generate speech using ElevenLabs TTS with custom options
+  fields:
+    text:
+      name: Text
+      description: Text to convert to speech
+      required: true
+      example: "Hello, this is a test message."
+      selector:
+        text:
+          multiline: true
+    model_id:
+      name: Model ID
+      description: ElevenLabs model ID to use
+      required: false
+      default: "eleven_multilingual_v2"
+      example: "eleven_multilingual_v2"
+      selector:
+        text:
+    voice_id:
+      name: Voice ID
+      description: ElevenLabs voice ID to use
+      required: true
+      example: "21m00Tcm4TlvDq8ikWAM"
+      selector:
+        text:
+    stability:
+      name: Stability
+      description: Voice stability setting (0.0-1.0)
+      required: false
+      default: 0.5
+      example: 0.5
+      selector:
+        number:
+          min: 0.0
+          max: 1.0
+          step: 0.01
+          mode: slider
+    similarity_boost:
+      name: Similarity Boost
+      description: Voice similarity boost setting (0.0-1.0)
+      required: false
+      default: 0.75
+      example: 0.75
+      selector:
+        number:
+          min: 0.0
+          max: 1.0
+          step: 0.01
+          mode: slider
+    style:
+      name: Style
+      description: Voice style setting (0.0-1.0)
+      required: false
+      default: 0.0
+      example: 0.0
+      selector:
+        number:
+          min: 0.0
+          max: 1.0
+          step: 0.01
+          mode: slider
+    speed:
+      name: Speed
+      description: Speech speed multiplier (0.25-4.0)
+      required: false
+      default: 1.0
+      example: 1.0
+      selector:
+        number:
+          min: 0.25
+          max: 4.0
+          step: 0.05
+          mode: slider
+    use_speaker_boost:
+      name: Use Speaker Boost
+      description: Whether to use speaker boost
+      required: false
+      default: true
+      selector:
+        boolean:
+    output_path:
+      name: Output Path
+      description: File path to save the generated audio (optional, will return audio data if not provided)
+      required: false
+      example: "/config/www/tts_output.mp3"
+      selector:
+        text:
