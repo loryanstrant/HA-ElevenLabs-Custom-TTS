@@ -1,0 +1,12 @@
+{
+  "domain": "elevenlabs_custom_tts",
+  "name": "ElevenLabs Custom TTS",
+  "codeowners": ["@loryanstrant"],
+  "config_flow": true,
+  "documentation": "https://github.com/loryanstrant/HA-ElevenLabs-custom-TTS",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "loggers": ["elevenlabs"],
+  "requirements": ["elevenlabs==2.3.0"],
+  "version": "1.0.0"
+}
