@@ -20,6 +20,13 @@ ATTR_STYLE = "style"
 ATTR_SPEED = "speed"
 ATTR_OUTPUT_PATH = "output_path"
 
+# Voice filtering parameters
+ATTR_VOICE_TYPE = "voice_type"
+ATTR_SEARCH_TEXT = "search_text"
+
+# Media player parameters
+ATTR_MEDIA_PLAYER_ENTITY = "media_player_entity"
+
 # Defaults
 DEFAULT_MODEL = "eleven_multilingual_v2"
 DEFAULT_STABILITY = 0.5

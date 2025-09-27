@@ -15,6 +15,7 @@ from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant, ServiceCall, ServiceResponse, SupportsResponse
 from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers.httpx_client import get_async_client
+from homeassistant.components.media_player import DOMAIN as MEDIA_PLAYER_DOMAIN
 
 from .const import (
     DOMAIN,
@@ -29,6 +30,9 @@ from .const import (
     ATTR_STYLE,
     ATTR_SPEED,
     ATTR_OUTPUT_PATH,
+    ATTR_VOICE_TYPE,
+    ATTR_SEARCH_TEXT,
+    ATTR_MEDIA_PLAYER_ENTITY,
     DEFAULT_MODEL,
     DEFAULT_STABILITY,
     DEFAULT_SIMILARITY_BOOST,
@@ -83,7 +87,10 @@ async def _async_register_services(hass: HomeAssistant, client: AsyncElevenLabs)
     """Register the services."""
     
     async def get_voices_service(call: ServiceCall) -> ServiceResponse:
-        """Service to get all available voices."""
+        """Service to get all available voices with optional filtering."""
+        voice_type = call.data.get(ATTR_VOICE_TYPE)
+        search_text = call.data.get(ATTR_SEARCH_TEXT, "").lower().strip()
+        
         try:
             voices_response = await client.voices.get_all()
             voices_list = []
@@ -98,7 +105,22 @@ async def _async_register_services(hass: HomeAssistant, client: AsyncElevenLabs)
                     voice_data["description"] = voice.description
                 if hasattr(voice, 'labels') and voice.labels:
                     voice_data["labels"] = voice.labels
+                
+                # Apply voice type filter
+                if voice_type and voice.category != voice_type:
+                    continue
+                
+                # Apply search text filter
+                if search_text:
+                    searchable_text = f"{voice.name.lower()} {voice.category.lower()}"
+                    if hasattr(voice, 'description') and voice.description:
+                        searchable_text += f" {voice.description.lower()}"
+                    if hasattr(voice, 'labels') and voice.labels:
+                        searchable_text += f" {' '.join(voice.labels).lower()}"
                     
+                    if search_text not in searchable_text:
+                        continue
+                
                 voices_list.append(voice_data)
                 
             return {"voices": voices_list}
@@ -118,6 +140,7 @@ async def _async_register_services(hass: HomeAssistant, client: AsyncElevenLabs)
         speed = call.data.get(ATTR_SPEED, DEFAULT_SPEED)
         use_speaker_boost = call.data.get(ATTR_USE_SPEAKER_BOOST, DEFAULT_USE_SPEAKER_BOOST)
         output_path = call.data.get(ATTR_OUTPUT_PATH)
+        media_player_entity = call.data.get(ATTR_MEDIA_PLAYER_ENTITY)
         
         voice_settings = VoiceSettings(
             stability=stability,
@@ -171,8 +194,44 @@ async def _async_register_services(hass: HomeAssistant, client: AsyncElevenLabs)
                 },
             }
             
-            # Save to file if output_path is provided
-            if output_path:
+            # Handle different output options
+            if media_player_entity:
+                # Send audio to media player entity
+                try:
+                    # Create a temporary file for the media player
+                    import tempfile
+                    import os
+                    
+                    # Create temporary file with .mp3 extension
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as temp_file:
+                        temp_file.write(audio_bytes)
+                        temp_path = temp_file.name
+                    
+                    # Use Home Assistant's media player service to play the audio
+                    await hass.services.async_call(
+                        MEDIA_PLAYER_DOMAIN,
+                        "play_media",
+                        {
+                            "entity_id": media_player_entity,
+                            "media_content_id": f"file://{temp_path}",
+                            "media_content_type": "music",
+                        },
+                        blocking=False,
+                    )
+                    
+                    response_data["media_player_entity"] = media_player_entity
+                    response_data["temp_file"] = temp_path
+                    _LOGGER.info("Audio sent to media player %s", media_player_entity)
+                    
+                    # Clean up temporary file after a delay (optional)
+                    # Note: We keep the file for now as the media player may need time to read it
+                    
+                except Exception as exc:
+                    _LOGGER.error("Failed to send audio to media player %s: %s", media_player_entity, exc)
+                    response_data["error"] = f"Failed to send to media player: {exc}"
+            
+            elif output_path:
+                # Save to file if output_path is provided
                 try:
                     # Ensure directory exists
                     os.makedirs(os.path.dirname(output_path), exist_ok=True)
@@ -187,7 +246,7 @@ async def _async_register_services(hass: HomeAssistant, client: AsyncElevenLabs)
                     _LOGGER.error("Failed to save audio to %s: %s", output_path, exc)
                     response_data["error"] = f"Failed to save file: {exc}"
             else:
-                # Return audio data as base64 if no output path
+                # Return audio data as base64 if no output path or media player
                 import base64
                 response_data["audio_data"] = base64.b64encode(audio_bytes).decode()
                 

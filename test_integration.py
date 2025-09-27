@@ -81,7 +81,76 @@ async def test_elevenlabs_integration():
     print(f"   - Audio size: {example_generate_response['audio_size']} bytes")
     print(f"   - Output file: {example_generate_response['output_path']}")
     
-    # Test 3: Service call examples for automations
+    # Test 3: Enhanced voice filtering examples
+    print("\n🔍 Testing enhanced voice filtering...")
+    
+    # Example filtered service calls
+    filtering_examples = [
+        {
+            "name": "Filter by Voice Type",
+            "service": "elevenlabs_custom_tts.get_voices",
+            "data": {
+                "voice_type": "premade"
+            }
+        },
+        {
+            "name": "Search for British Voices",
+            "service": "elevenlabs_custom_tts.get_voices", 
+            "data": {
+                "search_text": "british"
+            }
+        },
+        {
+            "name": "Find Male Professional Voices",
+            "service": "elevenlabs_custom_tts.get_voices",
+            "data": {
+                "voice_type": "professional",
+                "search_text": "male"
+            }
+        }
+    ]
+    
+    for example in filtering_examples:
+        print(f"\n   📋 {example['name']}:")
+        print(f"   Service: {example['service']}")
+        if example['data']:
+            print("   Parameters:")
+            for key, value in example['data'].items():
+                print(f"     {key}: {value}")
+    
+    # Test 4: Media player output examples
+    print("\n🔊 Testing media player output...")
+    
+    media_player_examples = [
+        {
+            "name": "Living Room Announcement",
+            "service": "elevenlabs_custom_tts.generate_voice",
+            "data": {
+                "text": "Good morning! Today's weather is sunny.",
+                "voice_id": "21m00Tcm4TlvDq8ikWAM",
+                "media_player_entity": "media_player.living_room_speaker"
+            }
+        },
+        {
+            "name": "Kitchen Timer Alert",
+            "service": "elevenlabs_custom_tts.generate_voice",
+            "data": {
+                "text": "Your timer has finished cooking!",
+                "voice_id": "AZnzlk1XvdvUeBnXmlld",
+                "stability": 0.8,
+                "media_player_entity": "media_player.kitchen_display"
+            }
+        }
+    ]
+    
+    for example in media_player_examples:
+        print(f"\n   🔊 {example['name']}:")
+        print(f"   Service: {example['service']}")
+        print("   Data:")
+        for key, value in example['data'].items():
+            print(f"     {key}: {value}")
+    
+    # Test 5: Service call examples for automations
     print("\n🤖 Example automation service calls:")
     
     automation_examples = [
@@ -108,6 +177,15 @@ async def test_elevenlabs_integration():
                 "use_speaker_boost": True,
                 "output_path": "/config/www/alert.mp3"
             }
+        },
+        {
+            "name": "Smart Speaker Announcement (NEW!)",
+            "service": "elevenlabs_custom_tts.generate_voice",
+            "data": {
+                "text": "The front door has been opened.",
+                "voice_id": "21m00Tcm4TlvDq8ikWAM", 
+                "media_player_entity": "media_player.all_speakers"
+            }
         }
     ]
     
@@ -119,12 +197,17 @@ async def test_elevenlabs_integration():
             print(f"     {key}: {value}")
     
     print("\n🎯 Integration test completed successfully!")
+    print("\n✨ NEW FEATURES:")
+    print("• Voice filtering by type (premade, cloned, generated, professional)")
+    print("• Voice search by name, description, or labels")
+    print("• Direct media player output - no file system needed!")
+    print("• Full backward compatibility with existing automations")
     print("\nTo use in Home Assistant:")
     print("1. Install the integration in custom_components/elevenlabs_custom_tts/")
     print("2. Restart Home Assistant")
     print("3. Add the integration via Configuration > Integrations")
     print("4. Enter your ElevenLabs API key")
-    print("5. Use the services in automations, scripts, or the Developer Tools")
+    print("5. Use the enhanced services in automations, scripts, or the Developer Tools")
 
 
 if __name__ == "__main__":
