@@ -1,0 +1,90 @@
+# Example Home Assistant configuration using ElevenLabs Custom TTS
+
+automation:
+  - alias: "Test ElevenLabs Custom TTS"
+    trigger:
+      - platform: state
+        entity_id: input_button.test_tts
+    action:
+      # First, get all available voices
+      - service: elevenlabs_custom_tts.get_voices
+        response_variable: voices_data
+      
+      # Log the available voices (optional)
+      - service: system_log.write
+        data:
+          message: "Available voices: {{ voices_data.voices | length }}"
+          level: info
+      
+      # Generate speech with custom parameters
+      - service: elevenlabs_custom_tts.generate_voice
+        data:
+          text: "Hello from Home Assistant! This is a test of the ElevenLabs Custom TTS integration."
+          voice_id: "{{ voices_data.voices[0].voice_id }}"  # Use first available voice
+          model_id: "eleven_multilingual_v2"
+          stability: 0.7
+          similarity_boost: 0.8
+          style: 0.2
+          use_speaker_boost: true
+          output_path: "/config/www/custom_tts_output.mp3"
+        response_variable: tts_result
+      
+      # Log the result
+      - service: system_log.write
+        data:
+          message: "TTS generated successfully. Audio size: {{ tts_result.audio_size }} bytes"
+          level: info
+
+  - alias: "Generate TTS with Custom Voice Settings"
+    trigger:
+      - platform: event
+        event_type: custom_tts_request
+    action:
+      - service: elevenlabs_custom_tts.generate_voice
+        data:
+          text: "{{ trigger.event.data.message }}"
+          voice_id: "{{ trigger.event.data.voice_id | default('21m00Tcm4TlvDq8ikWAM') }}"
+          stability: "{{ trigger.event.data.stability | default(0.5) }}"
+          similarity_boost: "{{ trigger.event.data.similarity_boost | default(0.75) }}"
+          style: "{{ trigger.event.data.style | default(0.0) }}"
+          use_speaker_boost: "{{ trigger.event.data.use_speaker_boost | default(true) }}"
+          output_path: "/config/www/dynamic_tts_{{ now().strftime('%Y%m%d_%H%M%S') }}.mp3"
+
+# Example script to demonstrate usage
+script:
+  generate_morning_greeting:
+    alias: "Generate Morning Greeting"
+    sequence:
+      - service: elevenlabs_custom_tts.generate_voice
+        data:
+          text: "Good morning! Today is {{ now().strftime('%A, %B %d, %Y') }}. Have a wonderful day!"
+          voice_id: "21m00Tcm4TlvDq8ikWAM"  # Replace with your preferred voice ID
+          stability: 0.6
+          similarity_boost: 0.8
+          style: 0.1
+          use_speaker_boost: true
+          output_path: "/config/www/morning_greeting.mp3"
+        response_variable: morning_tts
+      
+      # Play the generated audio (requires media_player)
+      - service: media_player.play_media
+        target:
+          entity_id: media_player.living_room_speaker  # Replace with your media player
+        data:
+          media_content_id: "{{ 'http://homeassistant.local:8123/local/morning_greeting.mp3' }}"
+          media_content_type: "music"
+
+# Example sensor to show available voices count
+sensor:
+  - platform: template
+    sensors:
+      elevenlabs_voices_count:
+        friendly_name: "Available ElevenLabs Voices"
+        unit_of_measurement: "voices"
+        value_template: >-
+          {% set voices_service_response = states.sensor.get_voices_response.state %}
+          {% if voices_service_response %}
+            {{ voices_service_response | from_json | length }}
+          {% else %}
+            0
+          {% endif %}

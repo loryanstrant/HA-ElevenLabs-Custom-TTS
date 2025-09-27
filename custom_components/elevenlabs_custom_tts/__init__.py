@@ -127,20 +127,31 @@ async def _async_register_services(hass: HomeAssistant, client: AsyncElevenLabs)
         )
         
         try:
-            # Note: ElevenLabs Python SDK doesn't support speed parameter in the current version
-            # We'll generate without speed for now and log a warning if speed != 1.0
-            if speed != 1.0:
-                _LOGGER.warning(
-                    "Speed parameter (%s) is not supported in current ElevenLabs SDK version. "
-                    "Using default speed.", speed
-                )
+            # Prepare conversion parameters
+            convert_params = {
+                "text": text,
+                "voice_id": voice_id,
+                "model_id": model_id,
+                "voice_settings": voice_settings,
+            }
             
-            audio_generator = client.text_to_speech.convert(
-                text=text,
-                voice_id=voice_id,
-                model_id=model_id,
-                voice_settings=voice_settings,
-            )
+            # Try to add speed parameter if supported
+            # Note: Speed parameter support depends on ElevenLabs SDK version and model
+            if speed != 1.0:
+                try:
+                    # Attempt to include speed parameter
+                    convert_params["speed"] = speed
+                    audio_generator = client.text_to_speech.convert(**convert_params)
+                except TypeError:
+                    # If speed parameter is not supported, fall back without it
+                    _LOGGER.warning(
+                        "Speed parameter (%s) is not supported in current ElevenLabs SDK version. "
+                        "Generating with default speed.", speed
+                    )
+                    convert_params.pop("speed", None)
+                    audio_generator = client.text_to_speech.convert(**convert_params)
+            else:
+                audio_generator = client.text_to_speech.convert(**convert_params)
             
             # Collect all audio bytes
             audio_bytes = b"".join([chunk async for chunk in audio_generator])
