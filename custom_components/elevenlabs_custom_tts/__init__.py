@@ -54,13 +54,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         httpx_client=httpx_client
     )
     
-    # Test the connection
-    try:
-        await client.voices.get_all()
-    except ConnectError as err:
-        raise ConfigEntryNotReady("Failed to connect to ElevenLabs") from err
-    except ApiError as err:
-        raise ConfigEntryNotReady("Authentication failed") from err
+    # Skip connection test during setup since it's already validated in config flow
+    # The blocking import_module warning was occurring here due to pydantic imports
+    # during the voices.get_all() call in the async event loop
     
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = client
@@ -200,7 +196,7 @@ async def _async_register_services(hass: HomeAssistant, client: AsyncElevenLabs)
                         {
                             "entity_id": media_player_entity,
                             "media_content_id": f"file://{temp_path}",
-                            "media_content_type": "audio/mpeg",
+                            "media_content_type": "music",
                         },
                         blocking=False,
                     )

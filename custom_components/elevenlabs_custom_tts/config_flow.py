@@ -25,11 +25,25 @@ async def validate_api_key(hass: HomeAssistant, api_key: str) -> bool:
     """Validate the API key by testing it with ElevenLabs API."""
     httpx_client = get_async_client(hass)
     client = AsyncElevenLabs(api_key=api_key, httpx_client=httpx_client)
+    
+    def _test_api_key():
+        """Test API key synchronously to avoid blocking import_module calls."""
+        import asyncio
+        try:
+            # Create a new event loop for this executor thread
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                return loop.run_until_complete(client.voices.get_all())
+            finally:
+                loop.close()
+        except ApiError:
+            return None
+    
     try:
-        # Test API key by fetching voices
-        await client.voices.get_all()
-        return True
-    except ApiError:
+        result = await hass.async_add_executor_job(_test_api_key)
+        return result is not None
+    except Exception:
         return False
 
 
