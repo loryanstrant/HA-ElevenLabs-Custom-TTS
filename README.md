@@ -3,28 +3,28 @@
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
 [![GitHub release](https://img.shields.io/github/release/loryanstrant/HA-ElevenLabs-Custom-TTS.svg)](https://github.com/loryanstrant/HA-ElevenLabs-Custom-TTS/releases/)
 
-An ElevenLabs TTS integration for Home Assistant that allows for custom options to be passed in actions, not just the integration settings.
+An ElevenLabs TTS integration for Home Assistant that provides enhanced voice discovery and integrates with Home Assistant's native TTS platform.
 
-This custom component provides two main services:
-1. **Get Voices** - Retrieve all available voices from ElevenLabs API
-2. **Generate Voice** - Generate speech with full control over parameters
+This custom component provides:
+1. **Get Voices Service** - Retrieve and filter available voices from ElevenLabs API  
+2. **Native TTS Platform** - Full integration with Home Assistant's TTS system with custom voice parameters
 
-## ✨ New Features
+## ✨ Features
 
 ### Enhanced Voice Discovery
 - **Voice Type Filtering**: Filter voices by category (premade, cloned, generated, professional)
 - **Voice Search**: Search voices by name, description, or labels (e.g., "british", "male", "authoritative")
 - **Smart Voice Selection**: Use filters in automations to dynamically select the perfect voice
 
-### Direct Media Player Integration
-- **Instant Playback**: Send TTS audio directly to media player entities without file system
-- **Multi-Room Audio**: Easily broadcast announcements to multiple speakers
-- **Streamlined Workflow**: No need to manage temporary files or complex automation chains
+### Native TTS Platform Integration
+- **Seamless Integration**: Works with Home Assistant's native TTS services (`tts.speak`, `tts.cloud_say`, etc.)
+- **Custom Voice Parameters**: Full control over stability, similarity_boost, style, speed, and speaker_boost
+- **Media Player Support**: Use with any Home Assistant media player through the TTS platform
+- **Multi-Language Support**: Supports multiple languages through ElevenLabs' multilingual models
 
 ### Backward Compatibility
-- All existing automations continue to work unchanged
-- File output and base64 encoding still fully supported
-- Gradual migration path to new features
+- Works with existing Home Assistant TTS automations and scripts
+- Gradual migration path from other TTS providers
 
 ## Installation
 
@@ -83,60 +83,38 @@ data:
 
 This returns a list of voices with their IDs, names, categories, and other metadata.
 
-### Generate Voice Service
+### Native TTS Integration
 
-Generate speech with custom parameters:
+Use with Home Assistant's native TTS services for direct media player output:
 
+#### Basic TTS Usage
 ```yaml
-service: elevenlabs_custom_tts.generate_voice
+service: tts.speak
 data:
-  text: "Hello, this is a test message."
-  voice_id: "21m00Tcm4TlvDq8ikWAM"  # Required
-  model_id: "eleven_multilingual_v2"  # Optional, default: eleven_multilingual_v2
-  stability: 0.5  # Optional, default: 0.5 (0.0-1.0)
-  similarity_boost: 0.75  # Optional, default: 0.75 (0.0-1.0)
-  style: 0.0  # Optional, default: 0.0 (0.0-1.0)
-  speed: 1.0  # Optional, default: 1.0 (0.25-4.0)
-  use_speaker_boost: true  # Optional, default: true
-  output_path: "/config/www/tts_output.mp3"  # Optional, saves to file if provided
+  entity_id: tts.elevenlabs  # Entity name may vary based on your setup
+  message: "Hello from Home Assistant!"
+  media_player_entity_id: media_player.living_room_speaker
 ```
 
-#### NEW: Direct Media Player Output
-
-Send audio directly to a media player entity without saving to file:
-
+#### Advanced TTS with Custom Voice Parameters
 ```yaml
-service: elevenlabs_custom_tts.generate_voice
+service: tts.speak  
 data:
-  text: "Good morning! The weather today is sunny."
-  voice_id: "21m00Tcm4TlvDq8ikWAM"
-  media_player_entity: "media_player.living_room_speaker"
+  entity_id: tts.elevenlabs
+  message: "Good morning! The weather today is sunny."
+  media_player_entity_id: media_player.living_room_speaker
+  options:
+    voice: "21m00Tcm4TlvDq8ikWAM"  # ElevenLabs voice ID
+    stability: 0.7
+    similarity_boost: 0.8
+    style: 0.2
+    speed: 1.0
+    use_speaker_boost: true
 ```
 
-### Example Automation
+### Example Automations
 
-#### Traditional File Output
-```yaml
-automation:
-  - alias: "Generate Custom TTS"
-    trigger:
-      - platform: state
-        entity_id: input_button.test_tts
-    action:
-      - service: elevenlabs_custom_tts.get_voices
-        response_variable: voices_response
-      - service: elevenlabs_custom_tts.generate_voice
-        data:
-          text: "Hello from Home Assistant!"
-          voice_id: "{{ voices_response.voices[0].voice_id }}"
-          stability: 0.7
-          similarity_boost: 0.8
-          style: 0.2
-          use_speaker_boost: true
-          output_path: "/config/www/custom_tts.mp3"
-```
-
-#### NEW: Smart Voice Selection with Media Player Output
+#### Smart Voice Selection with TTS
 ```yaml
 automation:
   - alias: "Smart Morning Announcement"
@@ -151,17 +129,19 @@ automation:
           search_text: "male"
         response_variable: male_voices
       
-      # Generate and play directly to speakers
-      - service: elevenlabs_custom_tts.generate_voice
+      # Generate and play directly to speakers using native TTS
+      - service: tts.speak
         data:
-          text: "Good morning! Today is {{ now().strftime('%A, %B %d') }}. The weather is {{ states('weather.home') }}."
-          voice_id: "{{ male_voices.voices[0].voice_id }}"
-          stability: 0.6
-          similarity_boost: 0.8
-          media_player_entity: "media_player.all_speakers"
+          entity_id: tts.elevenlabs
+          message: "Good morning! Today is {{ now().strftime('%A, %B %d') }}. The weather is {{ states('weather.home') }}."
+          media_player_entity_id: media_player.all_speakers
+          options:
+            voice: "{{ male_voices.voices[0].voice_id if male_voices.voices else '21m00Tcm4TlvDq8ikWAM' }}"
+            stability: 0.6
+            similarity_boost: 0.8
 ```
 
-#### NEW: Dynamic Voice Search and Multi-Room Announcements
+#### Dynamic Voice Search for Security Alerts
 ```yaml
 automation:
   - alias: "Security Alert with Voice Selection"
@@ -176,54 +156,70 @@ automation:
           search_text: "authoritative"
         response_variable: security_voices
         
-      # Announce to all rooms simultaneously
-      - service: elevenlabs_custom_tts.generate_voice
+      # Announce to living room
+      - service: tts.speak
         data:
-          text: "Security alert: Front door has been opened."
-          voice_id: "{{ security_voices.voices[0].voice_id if security_voices.voices else '21m00Tcm4TlvDq8ikWAM' }}"
-          stability: 0.9
-          style: 0.3
-          media_player_entity: "media_player.living_room_speaker"
-      - service: elevenlabs_custom_tts.generate_voice
+          entity_id: tts.elevenlabs
+          message: "Security alert: Front door has been opened."
+          media_player_entity_id: media_player.living_room_speaker
+          options:
+            voice: "{{ security_voices.voices[0].voice_id if security_voices.voices else '21m00Tcm4TlvDq8ikWAM' }}"
+            stability: 0.9
+            style: 0.3
+            
+      # Also announce to bedroom
+      - service: tts.speak
         data:
-          text: "Security alert: Front door has been opened."
-          voice_id: "{{ security_voices.voices[0].voice_id if security_voices.voices else '21m00Tcm4TlvDq8ikWAM' }}"
-          stability: 0.9
-          style: 0.3
-          media_player_entity: "media_player.bedroom_speaker"
+          entity_id: tts.elevenlabs
+          message: "Security alert: Front door has been opened."
+          media_player_entity_id: media_player.bedroom_speaker
+          options:
+            voice: "{{ security_voices.voices[0].voice_id if security_voices.voices else '21m00Tcm4TlvDq8ikWAM' }}"
+            stability: 0.9
+            style: 0.3
+```
+
+#### Simple TTS Usage
+```yaml
+automation:
+  - alias: "Simple TTS Test"
+    trigger:
+      - platform: state
+        entity_id: input_button.test_tts
+    action:
+      - service: tts.speak
+        data:
+          entity_id: tts.elevenlabs
+          message: "Hello from Home Assistant!"
+          media_player_entity_id: media_player.living_room_speaker
+          options:
+            voice: "21m00Tcm4TlvDq8ikWAM"
+            stability: 0.7
+            similarity_boost: 0.8
+```
 
 ## Parameters
 
-### Get Voices Parameters
+### Get Voices Service Parameters
 
 - **voice_type** (optional): Filter voices by category
   - Options: "premade", "cloned", "generated", "professional"
-- **search_text** (optional): Search for voices by name, description, or labels
+- **search_text** (optional): Search for voices by name, description, or labels  
   - Example: "british", "male", "authoritative"
 
-### Generate Voice Parameters
+**Returns:** List of voices with voice_id, name, category, description, and labels
 
-- **text** (required): Text to convert to speech
-- **voice_id** (required): ElevenLabs voice ID to use
-- **model_id** (optional): ElevenLabs model ID (default: "eleven_multilingual_v2")
+### TTS Platform Options
+
+When using Home Assistant's native TTS services, you can pass these options:
+
+- **voice** (optional): ElevenLabs voice ID to use (default: "21m00Tcm4TlvDq8ikWAM")
+- **model_id** (optional): ElevenLabs model ID (default: "eleven_multilingual_v2") 
 - **stability** (optional): Voice stability (0.0-1.0, default: 0.5)
 - **similarity_boost** (optional): Similarity boost (0.0-1.0, default: 0.75)
 - **style** (optional): Voice style (0.0-1.0, default: 0.0)
 - **speed** (optional): Speech speed multiplier (0.25-4.0, default: 1.0)
 - **use_speaker_boost** (optional): Enable speaker boost (default: true)
-- **output_path** (optional): File path to save audio file
-- **media_player_entity** (optional): Send audio directly to media player entity
-
-### Response
-
-The generate_voice service returns:
-- **success**: Boolean indicating success
-- **audio_size**: Size of generated audio in bytes
-- **parameters**: Echo of the parameters used
-- **output_path**: Path where file was saved (if provided)
-- **media_player_entity**: Media player entity used (if provided)
-- **audio_data**: Base64 encoded audio data (if no output_path or media_player_entity provided)
-- **error**: Error message (if any issues occurred)
 
 ## Requirements
 

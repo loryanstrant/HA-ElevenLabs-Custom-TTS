@@ -48,39 +48,52 @@ async def test_elevenlabs_integration():
     for voice in example_voices_response["voices"]:
         print(f"   - {voice['name']} ({voice['voice_id']}) - {voice['category']}")
     
-    # Test 2: Generate Voice service simulation
-    print("\n🎵 Testing generate_voice service...")
+    # Test 2: Native TTS platform integration
+    print("\n🎵 Testing native TTS platform integration...")
     
-    # This would be the actual service call in Home Assistant:
-    generate_voice_params = {
-        "text": "Hello, this is a test of the ElevenLabs Custom TTS integration for Home Assistant!",
-        "voice_id": "21m00Tcm4TlvDq8ikWAM",
-        "model_id": "eleven_multilingual_v2",
-        "stability": 0.7,
-        "similarity_boost": 0.8,
-        "style": 0.2,
-        "speed": 1.1,
-        "use_speaker_boost": True,
-        "output_path": "/config/www/test_tts_output.mp3"
-    }
+    # This shows how the integration works with Home Assistant's TTS platform:
+    tts_examples = [
+        {
+            "name": "Basic TTS Usage",
+            "service": "tts.speak",
+            "data": {
+                "entity_id": "tts.elevenlabs",
+                "message": "Hello from Home Assistant!",
+                "media_player_entity_id": "media_player.living_room_speaker"
+            }
+        },
+        {
+            "name": "Advanced TTS with Custom Options",
+            "service": "tts.speak", 
+            "data": {
+                "entity_id": "tts.elevenlabs",
+                "message": "Hello, this is a test of the ElevenLabs Custom TTS integration for Home Assistant!",
+                "media_player_entity_id": "media_player.living_room_speaker",
+                "options": {
+                    "voice": "21m00Tcm4TlvDq8ikWAM",
+                    "model_id": "eleven_multilingual_v2",
+                    "stability": 0.7,
+                    "similarity_boost": 0.8,
+                    "style": 0.2,
+                    "speed": 1.1,
+                    "use_speaker_boost": True
+                }
+            }
+        }
+    ]
     
-    print("📝 Parameters:")
-    for key, value in generate_voice_params.items():
-        print(f"   - {key}: {value}")
-    
-    # Simulated response
-    example_generate_response = {
-        "success": True,
-        "audio_size": 45678,
-        "parameters": generate_voice_params,
-        "output_path": "/config/www/test_tts_output.mp3"
-    }
-    
-    print(f"\n✅ Voice generation completed:")
-    print(f"   - Success: {example_generate_response['success']}")
-    print(f"   - Audio size: {example_generate_response['audio_size']} bytes")
-    print(f"   - Output file: {example_generate_response['output_path']}")
-    
+    for example in tts_examples:
+        print(f"\n   🎵 {example['name']}:")
+        print(f"   Service: {example['service']}")
+        print("   Data:")
+        for key, value in example['data'].items():
+            if key == "options" and isinstance(value, dict):
+                print(f"     {key}:")
+                for opt_key, opt_value in value.items():
+                    print(f"       {opt_key}: {opt_value}")
+            else:
+                print(f"     {key}: {value}")
+
     # Test 3: Enhanced voice filtering examples
     print("\n🔍 Testing enhanced voice filtering...")
     
@@ -118,96 +131,93 @@ async def test_elevenlabs_integration():
             for key, value in example['data'].items():
                 print(f"     {key}: {value}")
     
-    # Test 4: Media player output examples
-    print("\n🔊 Testing media player output...")
-    
-    media_player_examples = [
-        {
-            "name": "Living Room Announcement",
-            "service": "elevenlabs_custom_tts.generate_voice",
-            "data": {
-                "text": "Good morning! Today's weather is sunny.",
-                "voice_id": "21m00Tcm4TlvDq8ikWAM",
-                "media_player_entity": "media_player.living_room_speaker"
-            }
-        },
-        {
-            "name": "Kitchen Timer Alert",
-            "service": "elevenlabs_custom_tts.generate_voice",
-            "data": {
-                "text": "Your timer has finished cooking!",
-                "voice_id": "AZnzlk1XvdvUeBnXmlld",
-                "stability": 0.8,
-                "media_player_entity": "media_player.kitchen_display"
-            }
-        }
-    ]
-    
-    for example in media_player_examples:
-        print(f"\n   🔊 {example['name']}:")
-        print(f"   Service: {example['service']}")
-        print("   Data:")
-        for key, value in example['data'].items():
-            print(f"     {key}: {value}")
-    
-    # Test 5: Service call examples for automations
-    print("\n🤖 Example automation service calls:")
+    # Test 4: Automation workflow examples
+    print("\n🤖 Example automation workflows:")
     
     automation_examples = [
         {
-            "name": "Morning Greeting",
-            "service": "elevenlabs_custom_tts.generate_voice",
-            "data": {
-                "text": "Good morning! Today is {{ now().strftime('%A, %B %d') }}",
-                "voice_id": "21m00Tcm4TlvDq8ikWAM",
-                "stability": 0.6,
-                "similarity_boost": 0.8,
-                "output_path": "/config/www/morning.mp3"
-            }
+            "name": "Smart Morning Announcement",
+            "description": "Uses voice filtering + TTS platform",
+            "steps": [
+                {
+                    "service": "elevenlabs_custom_tts.get_voices",
+                    "data": {
+                        "voice_type": "premade",
+                        "search_text": "pleasant"
+                    }
+                },
+                {
+                    "service": "tts.speak",
+                    "data": {
+                        "entity_id": "tts.elevenlabs",
+                        "message": "Good morning! Today is {{ now().strftime('%A, %B %d') }}",
+                        "media_player_entity_id": "media_player.all_speakers",
+                        "options": {
+                            "voice": "{{ morning_voices.voices[0].voice_id if morning_voices.voices else '21m00Tcm4TlvDq8ikWAM' }}",
+                            "stability": 0.6,
+                            "similarity_boost": 0.8
+                        }
+                    }
+                }
+            ]
         },
         {
-            "name": "Emergency Alert",
-            "service": "elevenlabs_custom_tts.generate_voice", 
-            "data": {
-                "text": "Attention: {{ states('sensor.alert_message') }}",
-                "voice_id": "AZnzlk1XvdvUeBnXmlld",
-                "stability": 0.9,
-                "similarity_boost": 0.9,
-                "style": 0.5,
-                "use_speaker_boost": True,
-                "output_path": "/config/www/alert.mp3"
-            }
-        },
-        {
-            "name": "Smart Speaker Announcement (NEW!)",
-            "service": "elevenlabs_custom_tts.generate_voice",
-            "data": {
-                "text": "The front door has been opened.",
-                "voice_id": "21m00Tcm4TlvDq8ikWAM", 
-                "media_player_entity": "media_player.all_speakers"
-            }
+            "name": "Security Alert System",
+            "description": "Dynamic voice selection for alerts",
+            "steps": [
+                {
+                    "service": "elevenlabs_custom_tts.get_voices",
+                    "data": {
+                        "search_text": "authoritative"
+                    }
+                },
+                {
+                    "service": "tts.speak",
+                    "data": {
+                        "entity_id": "tts.elevenlabs",
+                        "message": "Security alert: Front door has been opened.",
+                        "media_player_entity_id": "media_player.living_room_speaker",
+                        "options": {
+                            "voice": "{{ security_voices.voices[0].voice_id if security_voices.voices else '21m00Tcm4TlvDq8ikWAM' }}",
+                            "stability": 0.9,
+                            "style": 0.3
+                        }
+                    }
+                }
+            ]
         }
     ]
     
     for i, example in enumerate(automation_examples, 1):
         print(f"\n   Example {i}: {example['name']}")
-        print(f"   Service: {example['service']}")
-        print("   Data:")
-        for key, value in example['data'].items():
-            print(f"     {key}: {value}")
+        print(f"   Description: {example['description']}")
+        print("   Steps:")
+        for j, step in enumerate(example['steps'], 1):
+            print(f"     {j}. Service: {step['service']}")
+            if 'data' in step:
+                print("        Data:")
+                for key, value in step['data'].items():
+                    if key == "options" and isinstance(value, dict):
+                        print(f"          {key}:")
+                        for opt_key, opt_value in value.items():
+                            print(f"            {opt_key}: {opt_value}")
+                    else:
+                        print(f"          {key}: {value}")
     
     print("\n🎯 Integration test completed successfully!")
-    print("\n✨ NEW FEATURES:")
+    print("\n✨ CURRENT FEATURES:")
     print("• Voice filtering by type (premade, cloned, generated, professional)")
     print("• Voice search by name, description, or labels")
-    print("• Direct media player output - no file system needed!")
-    print("• Full backward compatibility with existing automations")
+    print("• Native TTS platform integration with media player support")
+    print("• Custom voice parameters (stability, similarity_boost, style, speed)")
+    print("• Full Home Assistant TTS ecosystem compatibility")
     print("\nTo use in Home Assistant:")
     print("1. Install the integration in custom_components/elevenlabs_custom_tts/")
     print("2. Restart Home Assistant")
     print("3. Add the integration via Configuration > Integrations")
     print("4. Enter your ElevenLabs API key")
-    print("5. Use the enhanced services in automations, scripts, or the Developer Tools")
+    print("5. Use with Home Assistant's native TTS services for media player output")
+    print("6. Use get_voices service for dynamic voice selection in automations")
 
 
 if __name__ == "__main__":
