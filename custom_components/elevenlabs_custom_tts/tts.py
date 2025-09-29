@@ -52,13 +52,15 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
         self.hass = hass
         self._client = client
         self._config_entry = config_entry
-        self._name = "elevenlabs_custom_tts"  # This creates the entity ID: tts.elevenlabs_custom_tts
-        self._attr_name = "ElevenLabs Custom TTS"  # This sets the display name
-        self._attr_friendly_name = "ElevenLabs Custom TTS"  # Alternative display name attribute
+        # Set the entity name for entity ID generation
+        self._name = "elevenlabs_custom_tts"
+        # Set the friendly name that should appear in UI and registry
+        self._attr_name = "ElevenLabs Custom TTS"
+        self._friendly_name = "ElevenLabs Custom TTS"
 
     @property
     def name(self) -> str:
-        """Return the name of the entity (used for entity ID)."""
+        """Return the name of the entity (for entity ID)."""
         return self._name
 
     @property
