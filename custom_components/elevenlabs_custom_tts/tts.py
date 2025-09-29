@@ -41,22 +41,29 @@ async def async_setup_entry(
         return
         
     client = hass.data[DOMAIN][config_entry.entry_id]
-    async_add_entities([ElevenLabsTTSProvider(hass, client)])
+    async_add_entities([ElevenLabsTTSProvider(hass, client, config_entry)])
 
 
 class ElevenLabsTTSProvider(TextToSpeechEntity):
     """ElevenLabs TTS provider."""
 
-    def __init__(self, hass: HomeAssistant, client) -> None:
+    def __init__(self, hass: HomeAssistant, client, config_entry: ConfigEntry) -> None:
         """Initialize ElevenLabs TTS provider."""
         self.hass = hass
         self._client = client
-        self._name = "ElevenLabs"
+        self._config_entry = config_entry
+        self._name = "elevenlabs_custom_tts"  # This creates the entity ID: tts.elevenlabs_custom_tts
+        self._attr_name = "ElevenLabs Custom TTS"  # This sets the display name
 
     @property
     def name(self) -> str:
-        """Return the name of the entity."""
+        """Return the name of the entity (used for entity ID)."""
         return self._name
+        
+    @property 
+    def friendly_name(self) -> str:
+        """Return the friendly name of the entity (used for display)."""
+        return self._attr_name
 
     @property
     def unique_id(self) -> str:
@@ -77,6 +84,7 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
     def supported_options(self) -> list[str]:
         """Return list of supported options."""
         return [
+            "voice_profile",
             "voice",
             "model_id", 
             "stability",
@@ -106,8 +114,23 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
         if options is None:
             options = {}
             
-        # Merge provided options with defaults
-        merged_options = {**self.default_options, **options}
+        # Check if voice_profile is provided
+        voice_profile_name = options.get("voice_profile")
+        if voice_profile_name:
+            # Get voice profiles from config entry
+            voice_profiles = self._config_entry.options.get("voice_profiles", {})
+            if voice_profile_name in voice_profiles:
+                # Use voice profile settings as base, allow options to override
+                profile_options = voice_profiles[voice_profile_name].copy()
+                profile_options.update({k: v for k, v in options.items() if k != "voice_profile"})
+                merged_options = {**self.default_options, **profile_options}
+                _LOGGER.info("Using voice profile '%s' with settings: %s", voice_profile_name, profile_options)
+            else:
+                _LOGGER.warning("Voice profile '%s' not found, using default options", voice_profile_name)
+                merged_options = {**self.default_options, **options}
+        else:
+            # Merge provided options with defaults
+            merged_options = {**self.default_options, **options}
         
         voice_id = merged_options["voice"]
         model_id = merged_options["model_id"]
@@ -148,9 +171,10 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
                     return None
                     
                 _LOGGER.info(
-                    "Successfully generated %d bytes of audio for voice %s",
+                    "Successfully generated %d bytes of audio for voice %s%s",
                     len(audio_bytes),
-                    voice_id
+                    voice_id,
+                    f" using profile '{voice_profile_name}'" if voice_profile_name else ""
                 )
                 
                 return ("mp3", audio_bytes)

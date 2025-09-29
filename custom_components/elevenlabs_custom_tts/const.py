@@ -8,11 +8,14 @@ CONF_API_KEY = "api_key"
 # Service names
 SERVICE_GET_VOICES = "get_voices"
 SERVICE_GENERATE_VOICE = "generate_voice"
+SERVICE_SAVE_VOICE_PROFILE = "save_voice_profile"
 
 # Service parameters
 ATTR_TEXT = "text"
 ATTR_MODEL_ID = "model_id"
 ATTR_VOICE_ID = "voice_id"
+ATTR_VOICE = "voice"
+ATTR_PROFILE_NAME = "profile_name"
 ATTR_STABILITY = "stability"
 ATTR_USE_SPEAKER_BOOST = "use_speaker_boost"
 ATTR_SIMILARITY_BOOST = "similarity_boost"

@@ -17,26 +17,61 @@
       "already_configured": "ElevenLabs Custom TTS is already configured with this API key"
     }
   },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Voice Profile Management", 
+        "description": "Manage voice profiles for ElevenLabs TTS.\n\nCurrent profiles:\n{current_profiles}",
+        "data": {
+          "action": "Action"
+        }
+      },
+      "add_profile": {
+        "title": "Add Voice Profile",
+        "description": "Create a new voice profile with custom settings",
+        "data": {
+          "profile_name": "Profile Name",
+          "voice": "Voice ID",
+          "model_id": "Model ID", 
+          "stability": "Stability",
+          "similarity_boost": "Similarity Boost",
+          "style": "Style",
+          "speed": "Speed",
+          "use_speaker_boost": "Use Speaker Boost"
+        }
+      },
+      "delete_profile": {
+        "title": "Delete Voice Profile",
+        "description": "Select a voice profile to delete",
+        "data": {
+          "profile_name": "Profile to Delete"
+        }
+      }
+    },
+    "error": {
+      "profile_exists": "A profile with this name already exists"
+    }
+  },
   "services": {
     "get_voices": {
       "name": "Get Voices",
       "description": "Retrieve all available voices from ElevenLabs API"
     },
-    "generate_voice": {
-      "name": "Generate Voice",
-      "description": "Generate speech using ElevenLabs TTS with custom options",
+    "save_voice_profile": {
+      "name": "Save Voice Profile",
+      "description": "Save a voice profile with ElevenLabs TTS settings for easy reuse",
       "fields": {
-        "text": {
-          "name": "Text",
-          "description": "Text to convert to speech"
+        "profile_name": {
+          "name": "Profile Name",
+          "description": "Name for the voice profile"
+        },
+        "voice": {
+          "name": "Voice ID",
+          "description": "ElevenLabs voice ID to use"
         },
         "model_id": {
           "name": "Model ID",
-          "description": "ElevenLabs model ID to use"
-        },
-        "voice_id": {
-          "name": "Voice ID",
-          "description": "ElevenLabs voice ID to use"
+          "description": "ElevenLabs model to use"
         },
         "stability": {
           "name": "Stability",
@@ -57,10 +92,6 @@
         "use_speaker_boost": {
           "name": "Use Speaker Boost",
           "description": "Whether to use speaker boost"
-        },
-        "output_path": {
-          "name": "Output Path",
-          "description": "File path to save the generated audio"
         }
       }
     }
