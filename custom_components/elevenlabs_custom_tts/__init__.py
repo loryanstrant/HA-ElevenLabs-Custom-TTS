@@ -77,13 +77,9 @@ async def _async_register_services(hass: HomeAssistant, client: AsyncElevenLabs)
             raise HomeAssistantError("No ElevenLabs client available")
         client = entry_clients[0]
         
-        def _get_voices_sync():
-            """Get voices synchronously to avoid blocking the event loop."""
-            return client.voices.get_all()
-        
         try:
-            # Run the blocking operation in an executor thread
-            voices_response = await hass.async_add_executor_job(_get_voices_sync)
+            # Use the async client directly but handle the blocking import properly
+            voices_response = await client.voices.get_all()
             voices_list = []
             
             for voice in voices_response.voices:
