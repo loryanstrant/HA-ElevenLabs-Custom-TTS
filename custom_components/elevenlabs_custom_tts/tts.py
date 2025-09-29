@@ -117,6 +117,7 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
         if voice_profile_name:
             # Get voice profiles from config entry
             voice_profiles = self._config_entry.options.get("voice_profiles", {})
+            _LOGGER.info("Available voice profiles: %s", list(voice_profiles.keys()))
             if voice_profile_name in voice_profiles:
                 # Use voice profile settings as base, allow options to override
                 profile_options = voice_profiles[voice_profile_name].copy()
@@ -124,11 +125,13 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
                 merged_options = {**self.default_options, **profile_options}
                 _LOGGER.info("Using voice profile '%s' with settings: %s", voice_profile_name, profile_options)
             else:
-                _LOGGER.warning("Voice profile '%s' not found, using default options", voice_profile_name)
+                _LOGGER.warning("Voice profile '%s' not found in profiles %s, using default options", 
+                              voice_profile_name, list(voice_profiles.keys()))
                 merged_options = {**self.default_options, **options}
         else:
             # Merge provided options with defaults
             merged_options = {**self.default_options, **options}
+            _LOGGER.debug("No voice profile specified, using options: %s", options)
         
         voice_id = merged_options["voice"]
         model_id = merged_options["model_id"]

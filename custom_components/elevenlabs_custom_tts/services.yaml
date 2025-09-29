@@ -28,28 +28,28 @@ save_voice_profile:
   fields:
     profile_name:
       name: Profile Name
-      description: Name for the voice profile
+      description: A unique name for this voice profile (e.g., 'Gary', 'Narrator')
       required: true
       example: "Gary"
       selector:
         text:
     voice:
       name: Voice ID
-      description: ElevenLabs voice ID to use
+      description: ElevenLabs Voice ID (use the 'Get Voices' service to find available voice IDs)
       required: true
       example: "21m00Tcm4TlvDq8ikWAM"
       selector:
         text:
     model_id:
-      name: Model ID
-      description: ElevenLabs model to use
+      name: Model
+      description: ElevenLabs model to use (e.g., eleven_turbo_v2_5, eleven_multilingual_v2)
       required: false
       example: "eleven_turbo_v2_5"
       selector:
         text:
     stability:
       name: Stability
-      description: Voice stability setting (0.0-1.0)
+      description: Voice stability - lower values add more variability (0.0-1.0)
       required: false
       example: 0.5
       selector:
@@ -59,7 +59,7 @@ save_voice_profile:
           step: 0.01
     similarity_boost:
       name: Similarity Boost
-      description: Voice similarity boost setting (0.0-1.0)
+      description: How closely to match the original voice - higher is more similar (0.0-1.0)
       required: false
       example: 0.75
       selector:
@@ -69,7 +69,7 @@ save_voice_profile:
           step: 0.01
     style:
       name: Style
-      description: Voice style setting (0.0-1.0)
+      description: Style exaggeration - higher values are more expressive (0.0-1.0)
       required: false
       example: 0.0
       selector:
@@ -79,7 +79,7 @@ save_voice_profile:
           step: 0.01
     speed:
       name: Speed
-      description: Speech speed multiplier (0.25-4.0)
+      description: Speech speed multiplier - 1.0 is normal speed (0.25-4.0)
       required: false
       example: 1.0
       selector:
@@ -88,8 +88,8 @@ save_voice_profile:
           max: 4.0
           step: 0.05
     use_speaker_boost:
-      name: Use Speaker Boost
-      description: Whether to use speaker boost
+      name: Speaker Boost
+      description: Enhance speaker clarity and reduce background noise
       required: false
       example: true
       selector:
