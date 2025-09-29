@@ -8,8 +8,11 @@ An ElevenLabs TTS integration for Home Assistant that provides enhanced voice di
 This custom component provides:
 1. **Get Voices Service** - Retrieve and filter available voices from ElevenLabs API  
 2. **Native TTS Platform** - Full integration with Home Assistant's TTS system with custom voice parameters
+3. **Voice Profile Management** - Create, modify, and delete named voice profiles through the Home Assistant UI
 
 ## ✨ Features
+
+> **📝 Note:** The default TTS entity ID is `tts.elevenlabs_custom_tts`. This is used in all the examples below.
 
 ### Enhanced Voice Discovery
 - **Voice Type Filtering**: Filter voices by category (premade, cloned, generated, professional)
@@ -21,6 +24,12 @@ This custom component provides:
 - **Custom Voice Parameters**: Full control over stability, similarity_boost, style, speed, and speaker_boost
 - **Media Player Support**: Use with any Home Assistant media player through the TTS platform
 - **Multi-Language Support**: Supports multiple languages through ElevenLabs' multilingual models
+
+### Voice Profile Management
+- **Create Named Profiles**: Save your favorite voice configurations with custom names
+- **Easy Profile Management**: Add, modify, or delete voice profiles through the Home Assistant UI
+- **Quick Profile Selection**: Use saved profiles with the `voice_profile` option in TTS calls
+- **Profile Storage**: Profiles are stored in Home Assistant configuration and persist across restarts
 
 ### Backward Compatibility
 - Works with existing Home Assistant TTS automations and scripts
@@ -53,6 +62,85 @@ Or replace steps 1-6 with this:
 3. Go to Configuration > Integrations
 4. Click "Add Integration" and search for "ElevenLabs Custom TTS"
 5. Enter your ElevenLabs API key
+
+## 🎭 Voice Profile Management
+
+After installation, you can create and manage voice profiles through the Home Assistant UI. Voice profiles allow you to save your favorite voice configurations with custom names for easy reuse.
+
+### Accessing Voice Profile Settings
+
+1. Go to **Settings** → **Devices & Services** → **Integrations**
+2. Find your **ElevenLabs Custom TTS** integration
+3. Click **Configure** (or the gear icon)
+4. You'll see the Voice Profile Management interface
+
+<!-- TODO: Add screenshot of integration settings page -->
+<!-- ![Voice Profile Management Interface](docs/images/voice-profile-management.png) -->
+
+### Managing Voice Profiles
+
+#### Adding a New Voice Profile
+
+1. In the Voice Profile Management interface, select **"Add New Voice Profile"**
+2. Fill out the profile details:
+   - **Profile Name**: A descriptive name for your profile (e.g., "Morgan Freeman Style")
+   - **Voice ID**: The ElevenLabs voice ID to use
+   - **Model**: Choose the ElevenLabs model (default: "eleven_multilingual_v2")
+   - **Voice Stability**: Control voice consistency (0.0-1.0, default: 0.5)
+   - **Similarity Boost**: Enhance voice similarity (0.0-1.0, default: 0.75)
+   - **Style Exaggeration**: Control voice style intensity (0.0-1.0, default: 0.0)
+   - **Speech Speed**: Speech rate multiplier (0.25-4.0, default: 1.0)
+   - **Enable Speaker Boost**: Enhance speaker clarity (default: true)
+3. Click **Submit** to save the profile
+
+<!-- TODO: Add screenshot of add voice profile form -->
+<!-- ![Add Voice Profile Form](docs/images/add-voice-profile.png) -->
+
+#### Modifying an Existing Profile
+
+1. Select **"Modify Existing Profile"** 
+2. Choose the profile you want to edit from the dropdown
+3. Update any settings you want to change
+4. Click **Submit** to save changes
+
+<!-- TODO: Add screenshot of modify voice profile interface -->
+<!-- ![Modify Voice Profile](docs/images/modify-voice-profile.png) -->
+
+#### Deleting a Profile
+
+1. Select **"Delete Voice Profile"**
+2. Choose the profile to delete from the dropdown
+3. Confirm the deletion
+
+<!-- TODO: Add screenshot of delete voice profile interface -->
+<!-- ![Delete Voice Profile](docs/images/delete-voice-profile.png) -->
+
+### Using Voice Profiles
+
+Once you've created voice profiles, you can use them in your TTS calls:
+
+```yaml
+service: tts.speak
+data:
+  entity_id: tts.elevenlabs_custom_tts  # Note: Default entity ID
+  message: "This message uses my custom voice profile!"
+  media_player_entity_id: media_player.living_room_speaker
+  options:
+    voice_profile: "Morgan Freeman Style"  # Use your saved profile
+```
+
+You can also combine voice profiles with custom options (custom options override profile settings):
+
+```yaml
+service: tts.speak
+data:
+  entity_id: tts.elevenlabs_custom_tts
+  message: "This uses the profile but with faster speed."
+  media_player_entity_id: media_player.living_room_speaker
+  options:
+    voice_profile: "Morgan Freeman Style"
+    speed: 1.5  # This overrides the profile's speed setting
+```
 
 ## Usage
 
@@ -91,7 +179,7 @@ Use with Home Assistant's native TTS services for direct media player output:
 ```yaml
 service: tts.speak
 data:
-  entity_id: tts.elevenlabs  # Entity name may vary based on your setup
+  entity_id: tts.elevenlabs_custom_tts  # Default entity ID
   message: "Hello from Home Assistant!"
   media_player_entity_id: media_player.living_room_speaker
 ```
@@ -100,7 +188,7 @@ data:
 ```yaml
 service: tts.speak  
 data:
-  entity_id: tts.elevenlabs
+  entity_id: tts.elevenlabs_custom_tts
   message: "Good morning! The weather today is sunny."
   media_player_entity_id: media_player.living_room_speaker
   options:
@@ -110,6 +198,17 @@ data:
     style: 0.2
     speed: 1.0
     use_speaker_boost: true
+```
+
+#### Using Voice Profiles
+```yaml
+service: tts.speak  
+data:
+  entity_id: tts.elevenlabs_custom_tts
+  message: "This announcement uses my custom voice profile."
+  media_player_entity_id: media_player.living_room_speaker
+  options:
+    voice_profile: "News Anchor"  # Use your saved voice profile
 ```
 
 ### Example Automations
@@ -132,7 +231,7 @@ automation:
       # Generate and play directly to speakers using native TTS
       - service: tts.speak
         data:
-          entity_id: tts.elevenlabs
+          entity_id: tts.elevenlabs_custom_tts
           message: "Good morning! Today is {{ now().strftime('%A, %B %d') }}. The weather is {{ states('weather.home') }}."
           media_player_entity_id: media_player.all_speakers
           options:
@@ -159,7 +258,7 @@ automation:
       # Announce to living room
       - service: tts.speak
         data:
-          entity_id: tts.elevenlabs
+          entity_id: tts.elevenlabs_custom_tts
           message: "Security alert: Front door has been opened."
           media_player_entity_id: media_player.living_room_speaker
           options:
@@ -170,7 +269,7 @@ automation:
       # Also announce to bedroom
       - service: tts.speak
         data:
-          entity_id: tts.elevenlabs
+          entity_id: tts.elevenlabs_custom_tts
           message: "Security alert: Front door has been opened."
           media_player_entity_id: media_player.bedroom_speaker
           options:
@@ -189,13 +288,44 @@ automation:
     action:
       - service: tts.speak
         data:
-          entity_id: tts.elevenlabs
+          entity_id: tts.elevenlabs_custom_tts
           message: "Hello from Home Assistant!"
           media_player_entity_id: media_player.living_room_speaker
           options:
             voice: "21m00Tcm4TlvDq8ikWAM"
             stability: 0.7
             similarity_boost: 0.8
+```
+
+#### Using Voice Profiles in Automations
+```yaml
+automation:
+  - alias: "Morning Announcement with Voice Profile"
+    trigger:
+      - platform: time
+        at: "07:00:00"
+    action:
+      - service: tts.speak
+        data:
+          entity_id: tts.elevenlabs_custom_tts
+          message: "Good morning! Today's weather is {{ states('weather.home') }}."
+          media_player_entity_id: media_player.bedroom_speaker
+          options:
+            voice_profile: "Morning Announcer"  # Use saved voice profile
+            
+  - alias: "Bedtime Story with Custom Profile"
+    trigger:
+      - platform: time
+        at: "20:00:00"
+    action:
+      - service: tts.speak
+        data:
+          entity_id: tts.elevenlabs_custom_tts
+          message: "Once upon a time, in a land far away..."
+          media_player_entity_id: media_player.kids_room_speaker
+          options:
+            voice_profile: "Storyteller"
+            speed: 0.9  # Override profile speed for bedtime
 ```
 
 ## Parameters
@@ -213,6 +343,7 @@ automation:
 
 When using Home Assistant's native TTS services, you can pass these options:
 
+- **voice_profile** (optional): Use a saved voice profile by name (overrides individual settings)
 - **voice** (optional): ElevenLabs voice ID to use (default: "21m00Tcm4TlvDq8ikWAM")
 - **model_id** (optional): ElevenLabs model ID (default: "eleven_multilingual_v2") 
 - **stability** (optional): Voice stability (0.0-1.0, default: 0.5)
@@ -220,6 +351,58 @@ When using Home Assistant's native TTS services, you can pass these options:
 - **style** (optional): Voice style (0.0-1.0, default: 0.0)
 - **speed** (optional): Speech speed multiplier (0.25-4.0, default: 1.0)
 - **use_speaker_boost** (optional): Enable speaker boost (default: true)
+
+**Note:** When using `voice_profile`, the profile settings are applied first, then any additional options override specific profile settings.
+
+## 🚨 Troubleshooting
+
+### Entity ID Not Found
+- **Default Entity ID**: `tts.elevenlabs_custom_tts`
+- **Check Entity Registry**: Go to Settings → Devices & Services → Entities and search for "elevenlabs"
+- **Alternative Entity Names**: The entity might appear as `tts.elevenlabs` in some configurations
+
+### Voice Profiles Not Working
+- Ensure you're using the correct `voice_profile` name (case-sensitive)
+- Check that the profile exists in Settings → Integrations → ElevenLabs Custom TTS → Configure
+- Verify the voice profile contains valid ElevenLabs voice IDs
+
+### API Errors
+- Verify your ElevenLabs API key is correct and has sufficient quota
+- Check Home Assistant logs for detailed error messages
+- Ensure your internet connection is stable
+
+### Integration Not Loading
+- Restart Home Assistant after installation
+- Check that the `custom_components` directory structure is correct:
+  ```
+  custom_components/
+  └── elevenlabs_custom_tts/
+      ├── __init__.py
+      ├── manifest.json
+      ├── config_flow.py
+      ├── tts.py
+      ├── const.py
+      ├── strings.json
+      └── services.yaml
+  ```
+
+## 📝 Changelog
+
+### Version 0.5.7
+- **Improved logging**: Fixed debug logging levels for cleaner logs
+- **Code quality**: Addressed GitHub code quality recommendations
+
+### Version 0.5.6
+- **Voice Profile Management**: Complete UI for creating, modifying, and deleting voice profiles
+- **Enhanced Configuration**: User-friendly field labels and descriptions in config flow
+- **Service Cleanup**: Removed redundant `save_voice_profile` service
+- **Better Error Handling**: Improved error messages and validation
+
+### Version 0.5.x and earlier
+- Native TTS platform integration
+- Voice filtering and search capabilities
+- Enhanced voice discovery features
+- Multi-language support
 
 ## Requirements
 
