@@ -109,29 +109,38 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
         self, message: str, language: str, options: dict[str, Any] | None = None
     ) -> TtsAudioType:
         """Load TTS audio file from ElevenLabs."""
+        _LOGGER.error("=== TTS CALLED ===")
+        _LOGGER.error("Message: %s", message)
+        _LOGGER.error("Language: %s", language) 
+        _LOGGER.error("Raw options: %s", options)
+        
         if options is None:
             options = {}
             
+        _LOGGER.info("TTS called with options: %s", options)
+            
         # Check if voice_profile is provided
         voice_profile_name = options.get("voice_profile")
+        _LOGGER.error("Voice profile requested: %s", voice_profile_name)
         if voice_profile_name:
             # Get voice profiles from config entry
             voice_profiles = self._config_entry.options.get("voice_profiles", {})
-            _LOGGER.info("Available voice profiles: %s", list(voice_profiles.keys()))
+            _LOGGER.error("Available voice profiles: %s", list(voice_profiles.keys()))
+            _LOGGER.error("RAW STORED PROFILES DATA: %s", voice_profiles)
             if voice_profile_name in voice_profiles:
-                # Use voice profile settings as base, allow options to override
+                # Use voice profile settings directly - these are the user's intended settings
                 profile_options = voice_profiles[voice_profile_name].copy()
-                profile_options.update({k: v for k, v in options.items() if k != "voice_profile"})
                 merged_options = {**self.default_options, **profile_options}
-                _LOGGER.info("Using voice profile '%s' with settings: %s", voice_profile_name, profile_options)
+                _LOGGER.error("Using voice profile '%s' with settings: %s", voice_profile_name, profile_options)
+                _LOGGER.error("ORIGINAL STORED PROFILE DATA: %s", voice_profiles[voice_profile_name])
             else:
-                _LOGGER.warning("Voice profile '%s' not found in profiles %s, using default options", 
+                _LOGGER.error("Voice profile '%s' not found in profiles %s, using default options", 
                               voice_profile_name, list(voice_profiles.keys()))
                 merged_options = {**self.default_options, **options}
         else:
             # Merge provided options with defaults
             merged_options = {**self.default_options, **options}
-            _LOGGER.debug("No voice profile specified, using options: %s", options)
+            _LOGGER.error("No voice profile specified, using merged options: %s", merged_options)
         
         voice_id = merged_options["voice"]
         model_id = merged_options["model_id"]

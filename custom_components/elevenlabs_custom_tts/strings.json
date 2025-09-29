@@ -106,44 +106,6 @@
     "get_voices": {
       "name": "Get Voices",
       "description": "Retrieve all available voices from ElevenLabs API"
-    },
-    "save_voice_profile": {
-      "name": "Save Voice Profile",
-      "description": "Save a voice profile with ElevenLabs TTS settings for easy reuse",
-      "fields": {
-        "profile_name": {
-          "name": "Profile Name",
-          "description": "A unique name for this voice profile (e.g., 'Gary', 'Narrator')"
-        },
-        "voice": {
-          "name": "Voice ID",
-          "description": "ElevenLabs Voice ID (use the 'Get Voices' service to find available voice IDs)"
-        },
-        "model_id": {
-          "name": "Model",
-          "description": "ElevenLabs model to use (e.g., eleven_turbo_v2_5, eleven_multilingual_v2)"
-        },
-        "stability": {
-          "name": "Stability",
-          "description": "Voice stability - lower values add more variability (0.0-1.0)"
-        },
-        "similarity_boost": {
-          "name": "Similarity Boost",
-          "description": "How closely to match the original voice - higher is more similar (0.0-1.0)"
-        },
-        "style": {
-          "name": "Style",
-          "description": "Style exaggeration - higher values are more expressive (0.0-1.0)"
-        },
-        "speed": {
-          "name": "Speed",
-          "description": "Speech speed multiplier - 1.0 is normal speed (0.25-4.0)"
-        },
-        "use_speaker_boost": {
-          "name": "Speaker Boost",
-          "description": "Enhance speaker clarity and reduce background noise"
-        }
-      }
     }
   }
 }

@@ -8,7 +8,6 @@ CONF_API_KEY = "api_key"
 # Service names
 SERVICE_GET_VOICES = "get_voices"
 SERVICE_GENERATE_VOICE = "generate_voice"
-SERVICE_SAVE_VOICE_PROFILE = "save_voice_profile"
 
 # Service parameters
 ATTR_TEXT = "text"

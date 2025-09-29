@@ -16,23 +16,8 @@ from homeassistant.helpers.httpx_client import get_async_client
 from .const import (
     DOMAIN,
     SERVICE_GET_VOICES,
-    SERVICE_SAVE_VOICE_PROFILE,
     ATTR_VOICE_TYPE,
     ATTR_SEARCH_TEXT,
-    ATTR_PROFILE_NAME,
-    ATTR_VOICE,
-    ATTR_MODEL_ID,
-    ATTR_STABILITY,
-    ATTR_SIMILARITY_BOOST,
-    ATTR_STYLE,
-    ATTR_SPEED,
-    ATTR_USE_SPEAKER_BOOST,
-    DEFAULT_MODEL,
-    DEFAULT_STABILITY,
-    DEFAULT_SIMILARITY_BOOST,
-    DEFAULT_STYLE,
-    DEFAULT_SPEED,
-    DEFAULT_USE_SPEAKER_BOOST,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -74,7 +59,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Unregister services if this is the last entry
     if not hass.data[DOMAIN]:
         hass.services.async_remove(DOMAIN, SERVICE_GET_VOICES)
-        hass.services.async_remove(DOMAIN, SERVICE_SAVE_VOICE_PROFILE)
     
     return unload_ok
 
@@ -132,53 +116,10 @@ async def _async_register_services(hass: HomeAssistant, client: AsyncElevenLabs)
             _LOGGER.error("Error fetching voices: %s", exc)
             raise HomeAssistantError(f"Failed to fetch voices: {exc}") from exc
 
-    async def save_voice_profile_service(call: ServiceCall) -> None:
-        """Service to save a voice profile with settings."""
-        profile_name = call.data.get(ATTR_PROFILE_NAME)
-        voice = call.data.get(ATTR_VOICE)
-        
-        if not profile_name or not voice:
-            raise HomeAssistantError("Profile name and voice are required")
-        
-        # Build profile data
-        profile_data = {
-            "voice": voice,
-            "model_id": call.data.get(ATTR_MODEL_ID, DEFAULT_MODEL),
-            "stability": call.data.get(ATTR_STABILITY, DEFAULT_STABILITY),
-            "similarity_boost": call.data.get(ATTR_SIMILARITY_BOOST, DEFAULT_SIMILARITY_BOOST),
-            "style": call.data.get(ATTR_STYLE, DEFAULT_STYLE),
-            "speed": call.data.get(ATTR_SPEED, DEFAULT_SPEED),
-            "use_speaker_boost": call.data.get(ATTR_USE_SPEAKER_BOOST, DEFAULT_USE_SPEAKER_BOOST),
-        }
-        
-        # Find the first config entry to save the profile to
-        config_entries = hass.config_entries.async_entries(DOMAIN)
-        if not config_entries:
-            raise HomeAssistantError("No ElevenLabs integration configured")
-        
-        config_entry = config_entries[0]
-        
-        # Update options with the new profile
-        options = config_entry.options.copy()
-        voice_profiles = options.get("voice_profiles", {})
-        voice_profiles[profile_name] = profile_data
-        options["voice_profiles"] = voice_profiles
-        
-        # Update the config entry
-        hass.config_entries.async_update_entry(config_entry, options=options)
-        
-        _LOGGER.info("Saved voice profile '%s' with voice '%s'", profile_name, voice)
-    
     # Register the services
     hass.services.async_register(
         DOMAIN,
         SERVICE_GET_VOICES,
         get_voices_service,
         supports_response=SupportsResponse.ONLY,
-    )
-    
-    hass.services.async_register(
-        DOMAIN,
-        SERVICE_SAVE_VOICE_PROFILE,
-        save_voice_profile_service,
     )
