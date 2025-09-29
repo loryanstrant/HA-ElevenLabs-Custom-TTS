@@ -128,7 +128,7 @@ data:
     voice_profile: "Morgan Freeman Style"  # Use your saved profile
 ```
 
-<img width="1771" height="1233" alt="image" src="https://github.com/user-attachments/assets/624e6595-e8d4-4c2e-bf18-af6a38d14bcb" />
+<img width="1771" height="1233" alt="Home Assistant automation configuration showing voice profile usage" src="https://github.com/user-attachments/assets/624e6595-e8d4-4c2e-bf18-af6a38d14bcb" />
 
 
 You can also combine voice profiles with custom options (custom options override profile settings):
