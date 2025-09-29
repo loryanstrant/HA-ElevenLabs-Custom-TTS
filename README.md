@@ -93,7 +93,8 @@ After installation, you can create and manage voice profiles through the Home As
    - **Enable Speaker Boost**: Enhance speaker clarity (default: true)
 3. Click **Submit** to save the profile
 
-<img width="1400" height="1230" alt="image" src="https://github.com/user-attachments/assets/92c0acd5-9336-4a1d-8181-d9eb1154c01d" />
+<img width="1282" height="1184" alt="image" src="https://github.com/user-attachments/assets/6c9d8f81-7062-4abb-970e-7a850013cb8a" />
+
 
 
 #### Modifying an Existing Profile
@@ -103,8 +104,8 @@ After installation, you can create and manage voice profiles through the Home As
 3. Update any settings you want to change
 4. Click **Submit** to save changes
 
-<!-- TODO: Add screenshot of modify voice profile interface -->
-<!-- ![Modify Voice Profile](docs/images/modify-voice-profile.png) -->
+<img width="1250" height="741" alt="image" src="https://github.com/user-attachments/assets/ba26b3b7-a753-445e-a491-1525d52e7b79" />
+
 
 #### Deleting a Profile
 
@@ -112,8 +113,6 @@ After installation, you can create and manage voice profiles through the Home As
 2. Choose the profile to delete from the dropdown
 3. Confirm the deletion
 
-<!-- TODO: Add screenshot of delete voice profile interface -->
-<!-- ![Delete Voice Profile](docs/images/delete-voice-profile.png) -->
 
 ### Using Voice Profiles
 
@@ -128,6 +127,9 @@ data:
   options:
     voice_profile: "Morgan Freeman Style"  # Use your saved profile
 ```
+
+<img width="1771" height="1233" alt="image" src="https://github.com/user-attachments/assets/624e6595-e8d4-4c2e-bf18-af6a38d14bcb" />
+
 
 You can also combine voice profiles with custom options (custom options override profile settings):
 
