@@ -93,7 +93,7 @@ After installation, you can create and manage voice profiles through the Home As
    - **Enable Speaker Boost**: Enhance speaker clarity (default: true)
 3. Click **Submit** to save the profile
 
-<img width="1282" height="1184" alt="image" src="https://github.com/user-attachments/assets/6c9d8f81-7062-4abb-970e-7a850013cb8a" />
+<img width="1282" height="1184" alt="Create New Voice Profile dialog showing configuration options" src="https://github.com/user-attachments/assets/6c9d8f81-7062-4abb-970e-7a850013cb8a" />
 
 
 
