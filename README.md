@@ -104,7 +104,7 @@ After installation, you can create and manage voice profiles through the Home As
 3. Update any settings you want to change
 4. Click **Submit** to save changes
 
-<img width="1250" height="741" alt="image" src="https://github.com/user-attachments/assets/ba26b3b7-a753-445e-a491-1525d52e7b79" />
+<img width="1250" height="741" alt="Modify Voice Profile interface showing editable settings" src="https://github.com/user-attachments/assets/ba26b3b7-a753-445e-a491-1525d52e7b79" />
 
 
 #### Deleting a Profile
