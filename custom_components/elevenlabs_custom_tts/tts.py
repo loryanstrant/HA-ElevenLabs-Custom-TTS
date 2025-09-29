@@ -59,6 +59,11 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
         return self._name
 
     @property
+    def unique_id(self) -> str:
+        """Return a unique ID for this TTS entity."""
+        return f"{DOMAIN}_tts"
+
+    @property
     def default_language(self) -> str:
         """Return the default language."""
         return "en"
@@ -120,26 +125,23 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
             speed=speed,
         )
         
-        def _generate_audio_sync():
-            """Generate audio synchronously to avoid blocking the event loop."""
-            # Prepare conversion parameters
-            convert_params = {
-                "text": message,
-                "voice_id": voice_id,
-                "model_id": model_id,
-                "voice_settings": voice_settings,
-            }
-            
-            # Generate audio with ElevenLabs
-            audio_generator = self._client.text_to_speech.convert(**convert_params)
-            
-            # Collect all audio bytes
-            return b"".join([chunk for chunk in audio_generator])
-        
         try:
             with async_timeout.timeout(30):
-                # Run the blocking operation in an executor thread
-                audio_bytes = await self.hass.async_add_executor_job(_generate_audio_sync)
+                # Prepare conversion parameters
+                convert_params = {
+                    "text": message,
+                    "voice_id": voice_id,
+                    "model_id": model_id,
+                    "voice_settings": voice_settings,
+                }
+                
+                # Generate audio with ElevenLabs (async generator)
+                audio_generator = self._client.text_to_speech.convert(**convert_params)
+                
+                # Collect all audio bytes from async generator
+                audio_bytes = b""
+                async for chunk in audio_generator:
+                    audio_bytes += chunk
                 
                 if not audio_bytes:
                     _LOGGER.error("No audio data received from ElevenLabs")
