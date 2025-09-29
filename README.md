@@ -74,6 +74,7 @@ After installation, you can create and manage voice profiles through the Home As
 3. Click **Configure** (or the gear icon)
 4. You'll see the Voice Profile Management interface
 
+<img width="1555" height="879" alt="image" src="https://github.com/user-attachments/assets/316fce70-0322-41c3-98e3-4badb423e7de" />
 
 
 ### Managing Voice Profiles
@@ -92,6 +93,7 @@ After installation, you can create and manage voice profiles through the Home As
    - **Enable Speaker Boost**: Enhance speaker clarity (default: true)
 3. Click **Submit** to save the profile
 
+<img width="1400" height="1230" alt="image" src="https://github.com/user-attachments/assets/92c0acd5-9336-4a1d-8181-d9eb1154c01d" />
 
 
 #### Modifying an Existing Profile
