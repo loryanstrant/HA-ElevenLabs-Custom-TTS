@@ -17,52 +17,95 @@
       "already_configured": "ElevenLabs Custom TTS is already configured with this API key"
     }
   },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Voice Profile Management", 
+        "description": "Manage voice profiles for ElevenLabs TTS.\n\nCurrent profiles:\n{current_profiles}",
+        "data": {
+          "action": "What would you like to do?"
+        },
+        "data_description": {
+          "action": "Choose an action to manage your voice profiles"
+        }
+      },
+      "add_profile": {
+        "title": "Add New Voice Profile",
+        "description": "Create a new voice profile with custom settings. Voice ID can be obtained using the 'Get Voices' service.",
+        "data": {
+          "profile_name": "Profile Name",
+          "voice": "Voice ID",
+          "model_id": "Model", 
+          "stability": "Stability",
+          "similarity_boost": "Similarity Boost",
+          "style": "Style",
+          "speed": "Speed",
+          "use_speaker_boost": "Speaker Boost"
+        },
+        "data_description": {
+          "profile_name": "A unique name for this voice profile (e.g., 'Gary', 'Narrator')",
+          "voice": "ElevenLabs Voice ID (use the 'Get Voices' service to find available voice IDs)",
+          "model_id": "ElevenLabs model to use (e.g., eleven_turbo_v2_5, eleven_multilingual_v2)",
+          "stability": "Voice stability - lower values add more variability (0.0-1.0)",
+          "similarity_boost": "How closely to match the original voice - higher is more similar (0.0-1.0)",
+          "style": "Style exaggeration - higher values are more expressive (0.0-1.0)",
+          "speed": "Speech speed multiplier - 1.0 is normal speed (0.25-4.0)",
+          "use_speaker_boost": "Enhance speaker clarity and reduce background noise"
+        }
+      },
+      "modify_profile": {
+        "title": "Modify Voice Profile",
+        "description": "Select a voice profile to modify",
+        "data": {
+          "selected_profile": "Profile to Modify"
+        },
+        "data_description": {
+          "selected_profile": "Choose which voice profile you want to edit"
+        }
+      },
+      "edit_profile": {
+        "title": "Edit Voice Profile",
+        "description": "Modify the settings for this voice profile. Voice ID can be obtained using the 'Get Voices' service.",
+        "data": {
+          "profile_name": "Profile Name",
+          "voice": "Voice ID",
+          "model_id": "Model", 
+          "stability": "Stability",
+          "similarity_boost": "Similarity Boost",
+          "style": "Style",
+          "speed": "Speed",
+          "use_speaker_boost": "Speaker Boost"
+        },
+        "data_description": {
+          "profile_name": "A unique name for this voice profile (e.g., 'Gary', 'Narrator')",
+          "voice": "ElevenLabs Voice ID (use the 'Get Voices' service to find available voice IDs)",
+          "model_id": "ElevenLabs model to use (e.g., eleven_turbo_v2_5, eleven_multilingual_v2)",
+          "stability": "Voice stability - lower values add more variability (0.0-1.0)",
+          "similarity_boost": "How closely to match the original voice - higher is more similar (0.0-1.0)",
+          "style": "Style exaggeration - higher values are more expressive (0.0-1.0)",
+          "speed": "Speech speed multiplier - 1.0 is normal speed (0.25-4.0)",
+          "use_speaker_boost": "Enhance speaker clarity and reduce background noise"
+        }
+      },
+      "delete_profile": {
+        "title": "Delete Voice Profile",
+        "description": "Select a voice profile to delete",
+        "data": {
+          "profile_name": "Profile to Delete"
+        },
+        "data_description": {
+          "profile_name": "Choose which voice profile you want to remove permanently"
+        }
+      }
+    },
+    "error": {
+      "profile_exists": "A profile with this name already exists"
+    }
+  },
   "services": {
     "get_voices": {
       "name": "Get Voices",
       "description": "Retrieve all available voices from ElevenLabs API"
-    },
-    "generate_voice": {
-      "name": "Generate Voice",
-      "description": "Generate speech using ElevenLabs TTS with custom options",
-      "fields": {
-        "text": {
-          "name": "Text",
-          "description": "Text to convert to speech"
-        },
-        "model_id": {
-          "name": "Model ID",
-          "description": "ElevenLabs model ID to use"
-        },
-        "voice_id": {
-          "name": "Voice ID",
-          "description": "ElevenLabs voice ID to use"
-        },
-        "stability": {
-          "name": "Stability",
-          "description": "Voice stability setting (0.0-1.0)"
-        },
-        "similarity_boost": {
-          "name": "Similarity Boost",
-          "description": "Voice similarity boost setting (0.0-1.0)"
-        },
-        "style": {
-          "name": "Style",
-          "description": "Voice style setting (0.0-1.0)"
-        },
-        "speed": {
-          "name": "Speed",
-          "description": "Speech speed multiplier (0.25-4.0)"
-        },
-        "use_speaker_boost": {
-          "name": "Use Speaker Boost",
-          "description": "Whether to use speaker boost"
-        },
-        "output_path": {
-          "name": "Output Path",
-          "description": "File path to save the generated audio"
-        }
-      }
     }
   }
 }
