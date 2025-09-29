@@ -74,7 +74,7 @@ After installation, you can create and manage voice profiles through the Home As
 3. Click **Configure** (or the gear icon)
 4. You'll see the Voice Profile Management interface
 
-<img width="1555" height="879" alt="image" src="https://github.com/user-attachments/assets/316fce70-0322-41c3-98e3-4badb423e7de" />
+<img width="1555" height="879" alt="Voice Profile Management interface in Home Assistant" src="https://github.com/user-attachments/assets/316fce70-0322-41c3-98e3-4badb423e7de" />
 
 
 ### Managing Voice Profiles
