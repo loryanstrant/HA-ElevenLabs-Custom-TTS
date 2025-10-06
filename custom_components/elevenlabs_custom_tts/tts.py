@@ -11,7 +11,7 @@ from elevenlabs import VoiceSettings
 from elevenlabs.core import ApiError
 
 from homeassistant.components.tts import TextToSpeechEntity, TtsAudioType, Voice
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.config_entries import ConfigEntry
 
@@ -105,7 +105,8 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
             "use_speaker_boost": DEFAULT_USE_SPEAKER_BOOST,
         }
 
-    async def async_get_supported_voices(self, language: str) -> list[Voice]:
+    @callback
+    def async_get_supported_voices(self, language: str) -> list[Voice]:
         """Return list of supported voices for Assist pipeline."""
         voices = []
         
