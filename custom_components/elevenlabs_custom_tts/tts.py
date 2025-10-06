@@ -10,8 +10,8 @@ import async_timeout
 from elevenlabs import VoiceSettings
 from elevenlabs.core import ApiError
 
-from homeassistant.components.tts import TextToSpeechEntity, TtsAudioType
-from homeassistant.core import HomeAssistant
+from homeassistant.components.tts import TextToSpeechEntity, TtsAudioType, Voice
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.config_entries import ConfigEntry
 
@@ -105,6 +105,39 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
             "use_speaker_boost": DEFAULT_USE_SPEAKER_BOOST,
         }
 
+    @callback
+    def async_get_supported_voices(self, language: str) -> list[Voice]:
+        """Return list of supported voices for Assist pipeline."""
+        voices = []
+        
+        # Get voice profiles from config entry
+        voice_profiles = self._config_entry.options.get("voice_profiles", {})
+        
+        _LOGGER.debug("Getting supported voices for language %s, found %d voice profiles", 
+                     language, len(voice_profiles))
+        
+        # Add each configured voice profile as a selectable voice
+        for profile_name, profile_data in voice_profiles.items():
+            voice_id = profile_data.get("voice", "")
+            
+            # Create a Voice object for this profile
+            # The voice_id in Voice() becomes the identifier used in the Assist pipeline
+            # When selected, it will be passed as the "voice" option to async_get_tts_audio
+            voices.append(
+                Voice(
+                    voice_id=profile_name,  # Use profile name as the voice identifier
+                    name=profile_name,  # Display name in UI
+                )
+            )
+            _LOGGER.debug("Added voice profile '%s' (ElevenLabs voice: %s) to supported voices", 
+                         profile_name, voice_id)
+        
+        # If no profiles configured, return empty list to use default
+        if not voices:
+            _LOGGER.debug("No voice profiles configured, Assist will use default voice")
+        
+        return voices
+
     async def async_get_tts_audio(
         self, message: str, language: str, options: dict[str, Any] | None = None
     ) -> TtsAudioType:
@@ -115,13 +148,24 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
         
         if options is None:
             options = {}
-            
-        # Check if voice_profile is provided
+        
+        # Get voice profiles from config entry
+        voice_profiles = self._config_entry.options.get("voice_profiles", {})
+        
+        # Check if voice_profile is explicitly provided
         voice_profile_name = options.get("voice_profile")
+        
+        # If no explicit voice_profile but "voice" is provided, check if it matches a profile name
+        # This handles when Assist pipeline passes the selected voice
+        if not voice_profile_name and "voice" in options:
+            potential_profile = options["voice"]
+            if potential_profile in voice_profiles:
+                voice_profile_name = potential_profile
+                _LOGGER.debug("Voice '%s' matches a voice profile, using profile settings", potential_profile)
+        
         _LOGGER.debug("Voice profile requested: %s", voice_profile_name)
+        
         if voice_profile_name:
-            # Get voice profiles from config entry
-            voice_profiles = self._config_entry.options.get("voice_profiles", {})
             _LOGGER.debug("Available voice profiles: %s", list(voice_profiles.keys()))
             if voice_profile_name in voice_profiles:
                 # Use voice profile settings directly - these are the user's intended settings
