@@ -10,6 +10,11 @@ This custom component provides:
 2. **Native TTS Platform** - Full integration with Home Assistant's TTS system with custom voice parameters
 3. **Voice Profile Management** - Create, modify, and delete named voice profiles through the Home Assistant UI
 
+### Why use this instead of the native integration?
+- 🎙️ Complete voice control – Access all available voice parameters, including speed, which the native integration doesn’t support.
+- 🧠 Flexible voice profiles – Define multiple voice configurations and easily switch between them in automations, actions, and Assist pipelines. No need to create separate integration instances for each voice like the native setup requires.
+
+
 ## ✨ Features
 
 > **📝 Note:** The default TTS entity ID is `tts.elevenlabs_custom_tts`. This is used in all the examples below.
