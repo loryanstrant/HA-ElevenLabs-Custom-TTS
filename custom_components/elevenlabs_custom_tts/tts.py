@@ -205,6 +205,7 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
                     "voice_id": voice_id,
                     "model_id": model_id,
                     "voice_settings": voice_settings,
+                    "language_code": language,
                 }
                 
                 # Generate audio with ElevenLabs (async generator)
