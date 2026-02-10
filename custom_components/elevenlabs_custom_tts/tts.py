@@ -23,6 +23,7 @@ from .const import (
     DEFAULT_STYLE,
     DEFAULT_SPEED,
     DEFAULT_USE_SPEAKER_BOOST,
+    DEFAULT_APPLY_TEXT_NORMALIZATION,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -89,7 +90,8 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
             "similarity_boost",
             "style",
             "speed",
-            "use_speaker_boost"
+            "use_speaker_boost",
+            "apply_text_normalization"
         ]
 
     @property
@@ -103,6 +105,7 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
             "style": DEFAULT_STYLE,
             "speed": DEFAULT_SPEED,
             "use_speaker_boost": DEFAULT_USE_SPEAKER_BOOST,
+            "apply_text_normalization": DEFAULT_APPLY_TEXT_NORMALIZATION,
         }
 
     @callback
@@ -188,6 +191,7 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
         style = merged_options["style"]
         speed = merged_options["speed"]
         use_speaker_boost = merged_options["use_speaker_boost"]
+        apply_text_normalization = merged_options["apply_text_normalization"]
         
         voice_settings = VoiceSettings(
             stability=stability,
@@ -206,6 +210,7 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
                     "model_id": model_id,
                     "voice_settings": voice_settings,
                     "language_code": language,
+                    "apply_text_normalization": apply_text_normalization,
                 }
                 
                 # Generate audio with ElevenLabs (async generator)

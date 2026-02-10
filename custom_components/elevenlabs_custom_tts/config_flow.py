@@ -22,6 +22,7 @@ from .const import (
     DEFAULT_STYLE,
     DEFAULT_SPEED,
     DEFAULT_USE_SPEAKER_BOOST,
+    DEFAULT_APPLY_TEXT_NORMALIZATION,
 )
 
 # Schema field mappings for user-friendly labels
@@ -33,6 +34,7 @@ SIMILARITY_KEY = "Similarity Boost (0.0-1.0)"
 STYLE_KEY = "Style Exaggeration (0.0-1.0)"
 SPEED_KEY = "Speech Speed (0.25-4.0)"
 SPEAKER_BOOST_KEY = "Enable Speaker Boost"
+APPLY_TEXT_NORMALIZATION_KEY = "Apply Text Normalization"
 
 def _map_form_data_to_profile(user_input: dict[str, Any]) -> dict[str, Any]:
     """Map form data with friendly keys back to profile data with standard keys."""
@@ -44,6 +46,7 @@ def _map_form_data_to_profile(user_input: dict[str, Any]) -> dict[str, Any]:
         "style": user_input.get(STYLE_KEY, DEFAULT_STYLE),
         "speed": user_input.get(SPEED_KEY, DEFAULT_SPEED),
         "use_speaker_boost": user_input.get(SPEAKER_BOOST_KEY, DEFAULT_USE_SPEAKER_BOOST),
+        "apply_text_normalization": user_input.get(APPLY_TEXT_NORMALIZATION_KEY, DEFAULT_APPLY_TEXT_NORMALIZATION ),
     }
 
 def _map_profile_to_form_data(profile_name: str, profile_data: dict[str, Any]) -> dict[str, Any]:
@@ -57,6 +60,7 @@ def _map_profile_to_form_data(profile_name: str, profile_data: dict[str, Any]) -
         STYLE_KEY: profile_data.get("style", DEFAULT_STYLE),
         SPEED_KEY: profile_data.get("speed", DEFAULT_SPEED),
         SPEAKER_BOOST_KEY: profile_data.get("use_speaker_boost", DEFAULT_USE_SPEAKER_BOOST),
+        APPLY_TEXT_NORMALIZATION_KEY: profile_data.get("apply_text_normalization", DEFAULT_APPLY_TEXT_NORMALIZATION ),
     }
 
 USER_STEP_SCHEMA = vol.Schema({vol.Required(CONF_API_KEY): str})
@@ -223,6 +227,11 @@ class ElevenLabsOptionsFlow(OptionsFlow):
                     vol.Coerce(float), vol.Range(min=0.25, max=4.0)
                 ),
                 vol.Optional(SPEAKER_BOOST_KEY, default=DEFAULT_USE_SPEAKER_BOOST): bool,
+                vol.Optional(APPLY_TEXT_NORMALIZATION_KEY, default=DEFAULT_APPLY_TEXT_NORMALIZATION) : vol.In([
+                    "on",
+                    "off",
+                    "auto"
+                ]),
             }),
             errors=errors,
         )
@@ -266,6 +275,11 @@ class ElevenLabsOptionsFlow(OptionsFlow):
                             vol.Coerce(float), vol.Range(min=0.25, max=4.0)
                         ),
                         vol.Optional(SPEAKER_BOOST_KEY, default=form_data[SPEAKER_BOOST_KEY]): bool,
+                        vol.Optional(APPLY_TEXT_NORMALIZATION_KEY, default=form_data[APPLY_TEXT_NORMALIZATION_KEY]) : vol.In([
+                            "on",
+                            "off",
+                            "auto"
+                        ]),
                     })
                 )
         

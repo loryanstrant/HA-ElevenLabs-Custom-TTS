@@ -21,6 +21,7 @@ ATTR_SIMILARITY_BOOST = "similarity_boost"
 ATTR_STYLE = "style"
 ATTR_SPEED = "speed"
 ATTR_OUTPUT_PATH = "output_path"
+ATTR_APPLY_TEXT_NORMALIZATION = "apply_text_normalization"
 
 # Voice filtering parameters
 ATTR_VOICE_TYPE = "voice_type"
@@ -36,3 +37,4 @@ DEFAULT_SIMILARITY_BOOST = 0.75
 DEFAULT_STYLE = 0.0
 DEFAULT_SPEED = 1.0
 DEFAULT_USE_SPEAKER_BOOST = True
+DEFAULT_APPLY_TEXT_NORMALIZATION = "auto"
