@@ -46,7 +46,7 @@ def _map_form_data_to_profile(user_input: dict[str, Any]) -> dict[str, Any]:
         "style": user_input.get(STYLE_KEY, DEFAULT_STYLE),
         "speed": user_input.get(SPEED_KEY, DEFAULT_SPEED),
         "use_speaker_boost": user_input.get(SPEAKER_BOOST_KEY, DEFAULT_USE_SPEAKER_BOOST),
-        "apply_text_normalization": user_input.get(APPLY_TEXT_NORMALIZATION_KEY, DEFAULT_APPLY_TEXT_NORMALIZATION ),
+        "apply_text_normalization": user_input.get(APPLY_TEXT_NORMALIZATION_KEY, DEFAULT_APPLY_TEXT_NORMALIZATION),
     }
 
 def _map_profile_to_form_data(profile_name: str, profile_data: dict[str, Any]) -> dict[str, Any]:
@@ -60,7 +60,7 @@ def _map_profile_to_form_data(profile_name: str, profile_data: dict[str, Any]) -
         STYLE_KEY: profile_data.get("style", DEFAULT_STYLE),
         SPEED_KEY: profile_data.get("speed", DEFAULT_SPEED),
         SPEAKER_BOOST_KEY: profile_data.get("use_speaker_boost", DEFAULT_USE_SPEAKER_BOOST),
-        APPLY_TEXT_NORMALIZATION_KEY: profile_data.get("apply_text_normalization", DEFAULT_APPLY_TEXT_NORMALIZATION ),
+        APPLY_TEXT_NORMALIZATION_KEY: profile_data.get("apply_text_normalization", DEFAULT_APPLY_TEXT_NORMALIZATION),
     }
 
 USER_STEP_SCHEMA = vol.Schema({vol.Required(CONF_API_KEY): str})
@@ -227,7 +227,7 @@ class ElevenLabsOptionsFlow(OptionsFlow):
                     vol.Coerce(float), vol.Range(min=0.25, max=4.0)
                 ),
                 vol.Optional(SPEAKER_BOOST_KEY, default=DEFAULT_USE_SPEAKER_BOOST): bool,
-                vol.Optional(APPLY_TEXT_NORMALIZATION_KEY, default=DEFAULT_APPLY_TEXT_NORMALIZATION) : vol.In([
+                vol.Optional(APPLY_TEXT_NORMALIZATION_KEY, default=DEFAULT_APPLY_TEXT_NORMALIZATION): vol.In([
                     "on",
                     "off",
                     "auto"
@@ -275,7 +275,7 @@ class ElevenLabsOptionsFlow(OptionsFlow):
                             vol.Coerce(float), vol.Range(min=0.25, max=4.0)
                         ),
                         vol.Optional(SPEAKER_BOOST_KEY, default=form_data[SPEAKER_BOOST_KEY]): bool,
-                        vol.Optional(APPLY_TEXT_NORMALIZATION_KEY, default=form_data[APPLY_TEXT_NORMALIZATION_KEY]) : vol.In([
+                        vol.Optional(APPLY_TEXT_NORMALIZATION_KEY, default=form_data[APPLY_TEXT_NORMALIZATION_KEY]): vol.In([
                             "on",
                             "off",
                             "auto"
