@@ -372,11 +372,22 @@ When using Home Assistant's native TTS services, you can pass these options:
 - Ensure you're using the correct `voice_profile` name (case-sensitive)
 - Check that the profile exists in Settings → Integrations → ElevenLabs Custom TTS → Configure
 - Verify the voice profile contains valid ElevenLabs voice IDs
+- If a `tts.speak` call omits `voice_profile`, the integration falls back to the hardcoded default voice ID (`21m00Tcm4TlvDq8ikWAM`). On free-tier ElevenLabs accounts this default returns 402 — always specify `voice_profile` and point it at a `category: generated` voice. See **API Errors** above.
 
 ### API Errors
-- Verify your ElevenLabs API key is correct and has sufficient quota
-- Check Home Assistant logs for detailed error messages
-- Ensure your internet connection is stable
+
+- **`402 paid_plan_required` / "Free users cannot use library voices via the API"** — ElevenLabs restricts free-tier API access to voices in the `generated` category (voices you created yourself with **Voice Design**). Voices in `premade`, `professional`, or library-cloned categories return HTTP 402 **even after they've been added to your VoiceLab.** This includes the integration's hardcoded default voice (`21m00Tcm4TlvDq8ikWAM`, "Rachel"), so any `tts.speak` call made without `voice_profile` set will 402 on free-tier accounts.
+
+  | Voice category | Source | Free-tier API |
+  |---|---|---|
+  | `premade` | ElevenLabs default sample voices (Rachel, Bella, Adam, …) | ❌ |
+  | `professional` | Curated paid-licence voices | ❌ |
+  | `cloned` from library | Added to your VoiceLab from the public library | ❌ |
+  | `generated` | Voices you created yourself with **Voice Design** | ✅ |
+
+  To check which voices on your account are usable, call `elevenlabs_custom_tts.get_voices` (Developer Tools → Actions, with "Return response" ticked) and look for entries with `"category": "generated"`. Use one of those voice IDs in your profile.
+
+- **Other API errors** — Verify your ElevenLabs API key is correct and has sufficient quota. Check Home Assistant logs for detailed error messages. Ensure your internet connection is stable.
 
 ### Integration Not Loading
 - Restart Home Assistant after installation
