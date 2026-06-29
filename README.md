@@ -1,7 +1,14 @@
 # HA-ElevenLabs-custom-TTS
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
-[![GitHub release](https://img.shields.io/github/release/loryanstrant/HA-ElevenLabs-Custom-TTS.svg)](https://github.com/loryanstrant/HA-ElevenLabs-Custom-TTS/releases/)
+[![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5?style=flat-square)](https://github.com/hacs/integration)
+[![Release](https://img.shields.io/github/v/release/loryanstrant/HA-ElevenLabs-Custom-TTS?style=flat-square)](https://github.com/loryanstrant/HA-ElevenLabs-Custom-TTS/releases)
+[![Release date](https://img.shields.io/github/release-date/loryanstrant/HA-ElevenLabs-Custom-TTS?style=flat-square)](https://github.com/loryanstrant/HA-ElevenLabs-Custom-TTS/releases)
+[![Downloads](https://img.shields.io/github/downloads/loryanstrant/HA-ElevenLabs-Custom-TTS/total?style=flat-square)](https://github.com/loryanstrant/HA-ElevenLabs-Custom-TTS/releases)
+[![License](https://img.shields.io/github/license/loryanstrant/HA-ElevenLabs-Custom-TTS?style=flat-square)](LICENSE)
+[![Last commit](https://img.shields.io/github/last-commit/loryanstrant/HA-ElevenLabs-Custom-TTS?style=flat-square)](https://github.com/loryanstrant/HA-ElevenLabs-Custom-TTS/commits)
+[![Stars](https://img.shields.io/github/stars/loryanstrant/HA-ElevenLabs-Custom-TTS?style=flat-square)](https://github.com/loryanstrant/HA-ElevenLabs-Custom-TTS/stargazers)
+
+[![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=loryanstrant&repository=HA-ElevenLabs-Custom-TTS&category=integration)
 
 An ElevenLabs TTS integration for Home Assistant that provides enhanced voice discovery and integrates with Home Assistant's native TTS platform.
 
@@ -13,7 +20,6 @@ This custom component provides:
 ### Why use this instead of the native integration?
 - 🎙️ Complete voice control – Access all available voice parameters, including speed, which the native integration doesn’t support.
 - 🧠 Flexible voice profiles – Define multiple voice configurations and easily switch between them in automations, actions, and Assist pipelines. No need to create separate integration instances for each voice like the native setup requires.
-
 
 ## ✨ Features
 
@@ -81,7 +87,6 @@ After installation, you can create and manage voice profiles through the Home As
 
 <img width="1555" height="879" alt="Voice Profile Management interface in Home Assistant" src="https://github.com/user-attachments/assets/316fce70-0322-41c3-98e3-4badb423e7de" />
 
-
 ### Managing Voice Profiles
 
 #### Adding a New Voice Profile
@@ -100,8 +105,6 @@ After installation, you can create and manage voice profiles through the Home As
 
 <img width="1282" height="1184" alt="Create New Voice Profile dialog showing configuration options" src="https://github.com/user-attachments/assets/6c9d8f81-7062-4abb-970e-7a850013cb8a" />
 
-
-
 #### Modifying an Existing Profile
 
 1. Select **"Modify Existing Profile"** 
@@ -111,13 +114,11 @@ After installation, you can create and manage voice profiles through the Home As
 
 <img width="1250" height="741" alt="Modify Voice Profile interface showing editable settings" src="https://github.com/user-attachments/assets/ba26b3b7-a753-445e-a491-1525d52e7b79" />
 
-
 #### Deleting a Profile
 
 1. Select **"Delete Voice Profile"**
 2. Choose the profile to delete from the dropdown
 3. Confirm the deletion
-
 
 ### Using Voice Profiles
 
@@ -134,7 +135,6 @@ data:
 ```
 
 <img width="1771" height="1233" alt="Home Assistant automation configuration showing voice profile usage" src="https://github.com/user-attachments/assets/624e6595-e8d4-4c2e-bf18-af6a38d14bcb" />
-
 
 You can also combine voice profiles with custom options (custom options override profile settings):
 
@@ -428,14 +428,12 @@ When using Home Assistant's native TTS services, you can pass these options:
 - ElevenLabs API key
 - Internet connection for API calls
 
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Development Approach
 <img width="256" height="256" alt="Vibe Coding with GitHub Copilot 256x256" src="https://github.com/user-attachments/assets/bb41d075-6b3e-4f2b-a88e-94b2022b5d4f" />
-
 
 ## License
 
