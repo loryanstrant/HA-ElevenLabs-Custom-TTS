@@ -6,7 +6,7 @@ import logging
 from typing import Any
 
 from elevenlabs import AsyncElevenLabs
-from elevenlabs.core import ApiError
+from elevenlabs.core.api_error import ApiError
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry, ConfigFlow, ConfigFlowResult, OptionsFlow

@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 
 from elevenlabs import AsyncElevenLabs
-from elevenlabs.core import ApiError
+from elevenlabs.core.api_error import ApiError
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY

@@ -8,7 +8,7 @@ from typing import Any
 
 import async_timeout
 from elevenlabs import VoiceSettings
-from elevenlabs.core import ApiError
+from elevenlabs.core.api_error import ApiError
 
 from homeassistant.components.tts import TextToSpeechEntity, TtsAudioType, Voice
 from homeassistant.core import HomeAssistant, callback
