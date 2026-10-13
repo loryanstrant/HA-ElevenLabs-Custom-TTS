@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import logging
 
 from elevenlabs import AsyncElevenLabs
@@ -9,8 +10,9 @@ from elevenlabs.core import ApiError
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY
-from homeassistant.core import HomeAssistant, ServiceCall, ServiceResponse, SupportsResponse
+from homeassistant.core import HomeAssistant, callback, ServiceCall, ServiceResponse, SupportsResponse
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.httpx_client import get_async_client
 
 from .const import (
@@ -21,6 +23,34 @@ from .const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def api_key_unique_id(api_key: str) -> str:
+    """Derive a stable unique ID from the API key without storing the key itself."""
+    return hashlib.sha256(api_key.encode()).hexdigest()
+
+
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Migrate old config entries."""
+    if entry.version == 1:
+        # v1 used the raw API key as the unique ID, which leaks it into
+        # registries, diagnostics and logs. Replace it with a hash.
+        # The TTS entity's unique ID also becomes per-entry; migrate it in place
+        # so the existing entity_id (and any automations using it) is kept.
+        @callback
+        def _migrate_entity(entity_entry: er.RegistryEntry) -> dict | None:
+            if entity_entry.unique_id == f"{DOMAIN}_tts":
+                return {"new_unique_id": f"{DOMAIN}_{entry.entry_id}"}
+            return None
+
+        await er.async_migrate_entries(hass, entry.entry_id, _migrate_entity)
+        hass.config_entries.async_update_entry(
+            entry,
+            unique_id=api_key_unique_id(entry.data[CONF_API_KEY]),
+            version=2,
+        )
+        _LOGGER.info("Migrated ElevenLabs Custom TTS entry to version 2")
+    return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -99,11 +129,13 @@ async def _async_register_services(hass: HomeAssistant, client: AsyncElevenLabs)
                 
                 # Apply search text filter
                 if search_text:
-                    searchable_text = f"{voice.name.lower()} {voice.category.lower()}"
+                    searchable_text = f"{(voice.name or '').lower()} {(voice.category or '').lower()}"
                     if hasattr(voice, 'description') and voice.description:
                         searchable_text += f" {voice.description.lower()}"
                     if hasattr(voice, 'labels') and voice.labels:
-                        searchable_text += f" {' '.join(voice.labels).lower()}"
+                        # labels is a dict (e.g. {"accent": "british"}); search keys and values
+                        label_terms = [f"{k} {v}" for k, v in voice.labels.items()]
+                        searchable_text += f" {' '.join(label_terms).lower()}"
                     
                     if search_text not in searchable_text:
                         continue

@@ -95,7 +95,7 @@ After installation, you can create and manage voice profiles through the Home As
 2. Fill out the profile details:
    - **Profile Name**: A descriptive name for your profile (e.g., "Morgan Freeman Style")
    - **Voice ID**: The ElevenLabs voice ID to use
-   - **Model**: Choose the ElevenLabs model (default: "eleven_multilingual_v2")
+   - **Model**: Pick from the models your ElevenLabs account exposes (fetched live, e.g. `eleven_v3`, `eleven_flash_v2_5`), or type any model ID. Default: "eleven_multilingual_v2"
    - **Voice Stability**: Control voice consistency (0.0-1.0, default: 0.5)
    - **Similarity Boost**: Enhance voice similarity (0.0-1.0, default: 0.75)
    - **Style Exaggeration**: Control voice style intensity (0.0-1.0, default: 0.0)
