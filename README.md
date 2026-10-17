@@ -406,6 +406,11 @@ When using Home Assistant's native TTS services, you can pass these options:
 
 ## 📝 Changelog
 
+### Version 0.8.2
+- **Fixed: setup and voice-profile dialogs showed internal codes** instead of wording —
+  titles, help text and error messages (e.g. `invalid_api_key`) now appear as written,
+  because the translations file Home Assistant actually reads was missing
+
 ### Version 0.8.1
 - **Quieter, clearer errors**: ElevenLabs API failures no longer dump the entire HTTP
   response (every header) into the log or into service-call error messages — just the
