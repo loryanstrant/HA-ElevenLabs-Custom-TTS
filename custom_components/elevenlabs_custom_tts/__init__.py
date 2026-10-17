@@ -145,8 +145,13 @@ async def _async_register_services(hass: HomeAssistant, client: AsyncElevenLabs)
             return {"voices": voices_list}
             
         except ApiError as exc:
-            _LOGGER.error("Error fetching voices: %s", exc)
-            raise HomeAssistantError(f"Failed to fetch voices: {exc}") from exc
+            # str(ApiError) dumps every response header; status and body say the same thing
+            _LOGGER.error(
+                "Error fetching voices: API error %s: %s", exc.status_code, exc.body
+            )
+            raise HomeAssistantError(
+                f"Failed to fetch voices: ElevenLabs API error {exc.status_code}: {exc.body}"
+            ) from exc
 
     # Register the services
     hass.services.async_register(

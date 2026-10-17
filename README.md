@@ -406,6 +406,32 @@ When using Home Assistant's native TTS services, you can pass these options:
 
 ## 📝 Changelog
 
+### Version 0.8.1
+- **Quieter, clearer errors**: ElevenLabs API failures no longer dump the entire HTTP
+  response (every header) into the log or into service-call error messages — just the
+  status code and ElevenLabs' own explanation
+
+### Version 0.8.0
+- **Model selection is now a dropdown**: lists the text-to-speech models your account can
+  use, still accepts a typed-in model name, and falls back to a built-in list if the API
+  can't be reached
+- **Fixed: speech generation failing silently**: the request timeout used an API that modern
+  Home Assistant no longer supports, so the attempt raised immediately and the error was
+  swallowed. Failures now surface what ElevenLabs actually said
+- **Fixed: editing a voice profile could change the wrong one** when two profiles shared a
+  voice ID — profiles are now matched by name
+- **API key no longer stored as the config entry's unique ID**: replaced with a one-way
+  hash, migrated automatically on first start (existing entities and profiles are kept)
+- **Correct entity name** in the Assist voice picker instead of `elevenlabs_custom_tts`
+- **First automated test suite**, plus `elevenlabs>=2.51.0,<3`
+- ⚠️ **Requires Home Assistant 2025.1 or newer**
+- Model selection, the three fixes above and the test suite were contributed by
+  [@jbenson1410](https://github.com/jbenson1410) in
+  [#31](https://github.com/loryanstrant/HA-ElevenLabs-Custom-TTS/pull/31)
+
+> Versions 0.6.x–0.7.x are not listed here; see the
+> [releases page](https://github.com/loryanstrant/HA-ElevenLabs-Custom-TTS/releases).
+
 ### Version 0.5.7
 - **Improved logging**: Fixed debug logging levels for cleaner logs
 - **Code quality**: Addressed GitHub code quality recommendations
@@ -424,7 +450,7 @@ When using Home Assistant's native TTS services, you can pass these options:
 
 ## Requirements
 
-- Home Assistant 2023.1 or later
+- Home Assistant 2025.1 or later
 - ElevenLabs API key
 - Internet connection for API calls
 
