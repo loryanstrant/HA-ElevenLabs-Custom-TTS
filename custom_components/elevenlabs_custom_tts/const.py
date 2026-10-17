@@ -38,3 +38,22 @@ DEFAULT_STYLE = 0.0
 DEFAULT_SPEED = 1.0
 DEFAULT_USE_SPEAKER_BOOST = True
 DEFAULT_APPLY_TEXT_NORMALIZATION = "auto"
+
+# Fallback model list, used only when the ElevenLabs /v1/models endpoint
+# can't be reached. The options flow also accepts any custom model ID typed in.
+FALLBACK_MODELS = [
+    "eleven_v3",
+    "eleven_multilingual_v2",
+    "eleven_flash_v2_5",
+    "eleven_flash_v2",
+]
+
+# Models that reject the language_code parameter
+MODELS_WITHOUT_LANGUAGE_CODE = {
+    "eleven_multilingual_v2",
+    "eleven_multilingual_v1",
+    "eleven_monolingual_v1",
+}
+
+# Per-request timeout for audio generation (seconds)
+TTS_TIMEOUT = 60

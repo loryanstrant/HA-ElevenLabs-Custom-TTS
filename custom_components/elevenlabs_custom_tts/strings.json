@@ -11,7 +11,8 @@
     },
     "error": {
       "invalid_api_key": "Invalid API key. Please check your ElevenLabs API key.",
-      "unknown": "Unknown error occurred"
+      "unknown": "Unknown error occurred",
+      "cannot_connect": "Could not connect to ElevenLabs. Check your network and try again."
     },
     "abort": {
       "already_configured": "ElevenLabs Custom TTS is already configured with this API key"
@@ -20,7 +21,7 @@
   "options": {
     "step": {
       "init": {
-        "title": "Voice Profile Management", 
+        "title": "Voice Profile Management",
         "description": "Manage voice profiles for ElevenLabs TTS.\n\nCurrent profiles:\n{current_profiles}",
         "data": {
           "action": "What would you like to do?"
@@ -35,7 +36,7 @@
         "data": {
           "profile_name": "Profile Name",
           "voice": "Voice ID",
-          "model_id": "Model", 
+          "model_id": "Model",
           "stability": "Stability",
           "similarity_boost": "Similarity Boost",
           "style": "Style",
@@ -45,7 +46,7 @@
         "data_description": {
           "profile_name": "A unique name for this voice profile (e.g., 'Gary', 'Narrator')",
           "voice": "ElevenLabs Voice ID (use the 'Get Voices' service to find available voice IDs)",
-          "model_id": "ElevenLabs model to use (e.g., eleven_turbo_v2_5, eleven_multilingual_v2)",
+          "model_id": "Pick a model from your ElevenLabs account, or type any model ID (e.g. eleven_v3, eleven_flash_v2_5)",
           "stability": "Voice stability - lower values add more variability (0.0-1.0)",
           "similarity_boost": "How closely to match the original voice - higher is more similar (0.0-1.0)",
           "style": "Style exaggeration - higher values are more expressive (0.0-1.0)",
@@ -69,7 +70,7 @@
         "data": {
           "profile_name": "Profile Name",
           "voice": "Voice ID",
-          "model_id": "Model", 
+          "model_id": "Model",
           "stability": "Stability",
           "similarity_boost": "Similarity Boost",
           "style": "Style",
@@ -79,7 +80,7 @@
         "data_description": {
           "profile_name": "A unique name for this voice profile (e.g., 'Gary', 'Narrator')",
           "voice": "ElevenLabs Voice ID (use the 'Get Voices' service to find available voice IDs)",
-          "model_id": "ElevenLabs model to use (e.g., eleven_turbo_v2_5, eleven_multilingual_v2)",
+          "model_id": "Pick a model from your ElevenLabs account, or type any model ID (e.g. eleven_v3, eleven_flash_v2_5)",
           "stability": "Voice stability - lower values add more variability (0.0-1.0)",
           "similarity_boost": "How closely to match the original voice - higher is more similar (0.0-1.0)",
           "style": "Style exaggeration - higher values are more expressive (0.0-1.0)",

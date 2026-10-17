@@ -6,12 +6,12 @@ import asyncio
 import logging
 from typing import Any
 
-import async_timeout
 from elevenlabs import VoiceSettings
 from elevenlabs.core import ApiError
 
 from homeassistant.components.tts import TextToSpeechEntity, TtsAudioType, Voice
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.config_entries import ConfigEntry
 
@@ -24,6 +24,8 @@ from .const import (
     DEFAULT_SPEED,
     DEFAULT_USE_SPEAKER_BOOST,
     DEFAULT_APPLY_TEXT_NORMALIZATION,
+    MODELS_WITHOUT_LANGUAGE_CODE,
+    TTS_TIMEOUT,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -45,6 +47,25 @@ async def async_setup_entry(
     async_add_entities([ElevenLabsTTSProvider(hass, client, config_entry)])
 
 
+def _merge_options(
+    defaults: dict[str, Any],
+    profile: dict[str, Any] | None,
+    call_options: dict[str, Any],
+) -> dict[str, Any]:
+    """Decide the final TTS settings from defaults, a voice profile, and per-call options.
+
+    defaults:     integration-wide defaults (always contains every key)
+    profile:      the selected voice profile's settings, or None if no profile was used
+    call_options: options passed in the tts.speak call, e.g. {"speed": 1.2}
+                  (when a profile is used, voice/voice_profile are already stripped)
+    """
+    # Preserves the original behaviour: a profile wins outright and per-call
+    # options are ignored when a profile is selected.
+    if profile is not None:
+        return {**defaults, **profile}
+    return {**defaults, **call_options}
+
+
 class ElevenLabsTTSProvider(TextToSpeechEntity):
     """ElevenLabs TTS provider."""
 
@@ -53,21 +74,14 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
         self.hass = hass
         self._client = client
         self._config_entry = config_entry
-        # Set the entity name for entity ID generation
-        self._name = "elevenlabs_custom_tts"
-        # Set the friendly name that should appear in UI and registry
+        # Shown in the UI; also slugifies to the tts.elevenlabs_custom_tts entity_id
         self._attr_name = "ElevenLabs Custom TTS"
-        self._friendly_name = "ElevenLabs Custom TTS"
-
-    @property
-    def name(self) -> str:
-        """Return the name of the entity (for entity ID)."""
-        return self._name
 
     @property
     def unique_id(self) -> str:
         """Return a unique ID for this TTS entity."""
-        return f"{DOMAIN}_tts"
+        # One entity per config entry; a fixed ID collides with multiple API keys
+        return f"{DOMAIN}_{self._config_entry.entry_id}"
 
     @property
     def default_language(self) -> str:
@@ -168,21 +182,17 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
         
         _LOGGER.debug("Voice profile requested: %s", voice_profile_name)
         
-        if voice_profile_name:
-            _LOGGER.debug("Available voice profiles: %s", list(voice_profiles.keys()))
-            if voice_profile_name in voice_profiles:
-                # Use voice profile settings directly - these are the user's intended settings
-                profile_options = voice_profiles[voice_profile_name].copy()
-                merged_options = {**self.default_options, **profile_options}
-                _LOGGER.debug("Using voice profile '%s' with settings: %s", voice_profile_name, profile_options)
-            else:
-                _LOGGER.warning("Voice profile '%s' not found in profiles %s, using default options", 
-                              voice_profile_name, list(voice_profiles.keys()))
-                merged_options = {**self.default_options, **options}
-        else:
-            # Merge provided options with defaults
-            merged_options = {**self.default_options, **options}
-            _LOGGER.debug("No voice profile specified, using merged options")
+        profile = voice_profiles.get(voice_profile_name) if voice_profile_name else None
+        if voice_profile_name and profile is None:
+            _LOGGER.warning("Voice profile '%s' not found in profiles %s, using default options",
+                          voice_profile_name, list(voice_profiles.keys()))
+        
+        call_options = dict(options)
+        if profile is not None:
+            # "voice" held the profile name, not an ElevenLabs voice ID
+            call_options.pop("voice", None)
+            call_options.pop("voice_profile", None)
+        merged_options = _merge_options(self.default_options, profile, call_options)
         
         voice_id = merged_options["voice"]
         model_id = merged_options["model_id"]
@@ -201,45 +211,39 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
             speed=speed,
         )
         
+        convert_params = {
+            "text": message,
+            "voice_id": voice_id,
+            "model_id": model_id,
+            "voice_settings": voice_settings,
+            "apply_text_normalization": apply_text_normalization,
+        }
+        if model_id not in MODELS_WITHOUT_LANGUAGE_CODE:
+            convert_params["language_code"] = language
+        
         try:
-            with async_timeout.timeout(30):
-                # Prepare conversion parameters
-                convert_params = {
-                    "text": message,
-                    "voice_id": voice_id,
-                    "model_id": model_id,
-                    "voice_settings": voice_settings,
-                    "language_code": language,
-                    "apply_text_normalization": apply_text_normalization,
-                }
-                
-                # Generate audio with ElevenLabs (async generator)
-                audio_generator = self._client.text_to_speech.convert(**convert_params)
-                
-                # Collect all audio bytes from async generator
-                audio_bytes = b""
-                async for chunk in audio_generator:
-                    audio_bytes += chunk
-                
-                if not audio_bytes:
-                    _LOGGER.error("No audio data received from ElevenLabs")
-                    return None
-                    
-                _LOGGER.info(
-                    "Successfully generated %d bytes of audio for voice %s%s",
-                    len(audio_bytes),
-                    voice_id,
-                    f" using profile '{voice_profile_name}'" if voice_profile_name else ""
-                )
-                
-                return ("mp3", audio_bytes)
-                
-        except asyncio.TimeoutError:
-            _LOGGER.error("Timeout generating TTS audio")
-            return None
+            async with asyncio.timeout(TTS_TIMEOUT):
+                # Collect all audio bytes from the async generator
+                chunks = [
+                    chunk async for chunk in self._client.text_to_speech.convert(**convert_params)
+                ]
+        except TimeoutError as err:
+            raise HomeAssistantError("Timed out generating ElevenLabs TTS audio") from err
         except ApiError as err:
-            _LOGGER.error("ElevenLabs API error: %s", err)
-            return None
-        except Exception as err:
-            _LOGGER.error("Error generating TTS audio: %s", err)
-            return None
+            # err.body carries ElevenLabs' explanation (e.g. unsupported setting for a model)
+            raise HomeAssistantError(
+                f"ElevenLabs API error {err.status_code}: {err.body}"
+            ) from err
+        
+        audio_bytes = b"".join(chunks)
+        if not audio_bytes:
+            raise HomeAssistantError("No audio data received from ElevenLabs")
+        
+        _LOGGER.debug(
+            "Generated %d bytes of audio for voice %s with model %s%s",
+            len(audio_bytes),
+            voice_id,
+            model_id,
+            f" using profile '{voice_profile_name}'" if voice_profile_name else "",
+        )
+        return ("mp3", audio_bytes)
