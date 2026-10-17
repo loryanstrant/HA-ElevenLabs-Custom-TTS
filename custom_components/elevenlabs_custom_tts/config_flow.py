@@ -96,6 +96,14 @@ async def async_get_tts_models(hass: HomeAssistant, entry: ConfigEntry) -> list[
         return list(FALLBACK_MODELS)
     try:
         models = await client.models.list()
+    except ApiError as err:
+        # Log status and body only: str(ApiError) also dumps every response header
+        _LOGGER.warning(
+            "Could not fetch ElevenLabs models (API error %s: %s), using fallback list",
+            err.status_code,
+            err.body,
+        )
+        return list(FALLBACK_MODELS)
     except Exception as err:  # noqa: BLE001
         _LOGGER.warning("Could not fetch ElevenLabs models, using fallback list: %s", err)
         return list(FALLBACK_MODELS)
