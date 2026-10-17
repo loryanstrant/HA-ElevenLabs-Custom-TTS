@@ -358,6 +358,7 @@ When using Home Assistant's native TTS services, you can pass these options:
 - **style** (optional): Voice style (0.0-1.0, default: 0.0)
 - **speed** (optional): Speech speed multiplier (0.25-4.0, default: 1.0)
 - **use_speaker_boost** (optional): Enable speaker boost (default: true)
+- **apply_text_normalization** (optional): Whether ElevenLabs spells out numbers, dates and abbreviations before speaking: `auto`, `on` or `off` (default: `auto`)
 
 **Note:** When using `voice_profile`, the profile settings are applied first, then any additional options override specific profile settings.
 

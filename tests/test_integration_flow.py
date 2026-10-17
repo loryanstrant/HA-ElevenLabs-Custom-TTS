@@ -70,14 +70,15 @@ async def _setup(hass, profiles=None):
     return entry
 
 
-async def test_tts_profile_omits_language_code_for_multilingual(hass, mock_client) -> None:
+async def test_tts_profile_sends_language_code_for_multilingual(hass, mock_client) -> None:
     await _setup(hass, {"Narrator": PROFILE})
     entity = hass.data["tts"].get_entity("tts.elevenlabs_custom_tts")
     audio = await entity.async_get_tts_audio("hello", "en", {"voice": "Narrator"})
     assert audio == ("mp3", b"abcdef")
     kwargs = mock_client.last_convert_kwargs
     assert kwargs["voice_id"] == "voice123"
-    assert "language_code" not in kwargs
+    assert kwargs["model_id"] == "eleven_multilingual_v2"
+    assert kwargs["language_code"] == "en"
 
 
 async def test_tts_sends_language_code_for_v3(hass, mock_client) -> None:
