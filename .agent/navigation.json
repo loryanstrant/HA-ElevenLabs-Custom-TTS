@@ -1,0 +1,673 @@
+{
+  "schema_version": "1.0",
+  "repository": "HA-ElevenLabs-Custom-TTS",
+  "identity": {
+    "description": "An ElevenLabs TTS integration for Home Assistant that provides enhanced voice discovery and integrates with Home Assistant's native TTS platform.",
+    "default_branch": "main",
+    "languages": {
+      "Python": 9
+    },
+    "topics": [],
+    "licence": "MIT License",
+    "file_count": 22
+  },
+  "start_here": {
+    "readme": "README.md",
+    "agents_md": "AGENTS.md",
+    "entry_points": [],
+    "decision_records": [],
+    "build_config": [
+      "custom_components/elevenlabs_custom_tts/manifest.json",
+      "hacs.json",
+      "pytest.ini"
+    ],
+    "source_roots": [
+      "custom_components"
+    ]
+  },
+  "documentation": [
+    {
+      "path": ".github/copilot-instructions.md",
+      "title": "Copilot instructions — HA-ElevenLabs-Custom-TTS",
+      "lines": 34,
+      "headings": [
+        {
+          "level": 2,
+          "text": "What this repo is",
+          "anchor": "what-this-repo-is"
+        },
+        {
+          "level": 2,
+          "text": "Repo shape",
+          "anchor": "repo-shape"
+        },
+        {
+          "level": 2,
+          "text": "Conventions",
+          "anchor": "conventions"
+        },
+        {
+          "level": 2,
+          "text": "Never",
+          "anchor": "never"
+        }
+      ]
+    },
+    {
+      "path": "README.md",
+      "title": "HA-ElevenLabs-custom-TTS",
+      "lines": 475,
+      "headings": [
+        {
+          "level": 3,
+          "text": "Why use this instead of the native integration?",
+          "anchor": "why-use-this-instead-of-the-native-integration"
+        },
+        {
+          "level": 2,
+          "text": "✨ Features",
+          "anchor": "-features"
+        },
+        {
+          "level": 3,
+          "text": "Enhanced Voice Discovery",
+          "anchor": "enhanced-voice-discovery"
+        },
+        {
+          "level": 3,
+          "text": "Native TTS Platform Integration",
+          "anchor": "native-tts-platform-integration"
+        },
+        {
+          "level": 3,
+          "text": "Voice Profile Management",
+          "anchor": "voice-profile-management"
+        },
+        {
+          "level": 3,
+          "text": "Backward Compatibility",
+          "anchor": "backward-compatibility"
+        },
+        {
+          "level": 2,
+          "text": "Installation",
+          "anchor": "installation"
+        },
+        {
+          "level": 3,
+          "text": "Via HACS (Recommended)",
+          "anchor": "via-hacs-recommended"
+        },
+        {
+          "level": 3,
+          "text": "Manual Installation",
+          "anchor": "manual-installation"
+        },
+        {
+          "level": 2,
+          "text": "🎭 Voice Profile Management",
+          "anchor": "-voice-profile-management"
+        },
+        {
+          "level": 3,
+          "text": "Accessing Voice Profile Settings",
+          "anchor": "accessing-voice-profile-settings"
+        },
+        {
+          "level": 3,
+          "text": "Managing Voice Profiles",
+          "anchor": "managing-voice-profiles"
+        },
+        {
+          "level": 3,
+          "text": "Using Voice Profiles",
+          "anchor": "using-voice-profiles"
+        },
+        {
+          "level": 2,
+          "text": "Usage",
+          "anchor": "usage"
+        },
+        {
+          "level": 3,
+          "text": "Get Voices Service",
+          "anchor": "get-voices-service"
+        },
+        {
+          "level": 3,
+          "text": "Native TTS Integration",
+          "anchor": "native-tts-integration"
+        },
+        {
+          "level": 3,
+          "text": "Example Automations",
+          "anchor": "example-automations"
+        },
+        {
+          "level": 2,
+          "text": "Parameters",
+          "anchor": "parameters"
+        },
+        {
+          "level": 3,
+          "text": "Get Voices Service Parameters",
+          "anchor": "get-voices-service-parameters"
+        },
+        {
+          "level": 3,
+          "text": "TTS Platform Options",
+          "anchor": "tts-platform-options"
+        },
+        {
+          "level": 2,
+          "text": "🚨 Troubleshooting",
+          "anchor": "-troubleshooting"
+        },
+        {
+          "level": 3,
+          "text": "Entity ID Not Found",
+          "anchor": "entity-id-not-found"
+        },
+        {
+          "level": 3,
+          "text": "Voice Profiles Not Working",
+          "anchor": "voice-profiles-not-working"
+        },
+        {
+          "level": 3,
+          "text": "API Errors",
+          "anchor": "api-errors"
+        },
+        {
+          "level": 3,
+          "text": "Integration Not Loading",
+          "anchor": "integration-not-loading"
+        },
+        {
+          "level": 2,
+          "text": "📝 Changelog",
+          "anchor": "-changelog"
+        },
+        {
+          "level": 3,
+          "text": "Version 0.8.2",
+          "anchor": "version-082"
+        },
+        {
+          "level": 3,
+          "text": "Version 0.8.1",
+          "anchor": "version-081"
+        },
+        {
+          "level": 3,
+          "text": "Version 0.8.0",
+          "anchor": "version-080"
+        },
+        {
+          "level": 3,
+          "text": "Version 0.5.7",
+          "anchor": "version-057"
+        },
+        {
+          "level": 3,
+          "text": "Version 0.5.6",
+          "anchor": "version-056"
+        },
+        {
+          "level": 3,
+          "text": "Version 0.5.x and earlier",
+          "anchor": "version-05x-and-earlier"
+        },
+        {
+          "level": 2,
+          "text": "Requirements",
+          "anchor": "requirements"
+        },
+        {
+          "level": 2,
+          "text": "Contributing",
+          "anchor": "contributing"
+        },
+        {
+          "level": 2,
+          "text": "Development Approach",
+          "anchor": "development-approach"
+        },
+        {
+          "level": 2,
+          "text": "License",
+          "anchor": "license"
+        },
+        {
+          "level": 2,
+          "text": "Support",
+          "anchor": "support"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "source_roots": [
+      "custom_components"
+    ],
+    "symbol_source": "repomix (tree-sitter signatures)",
+    "routes": [],
+    "files": [
+      {
+        "path": "custom_components/elevenlabs_custom_tts/__init__.py",
+        "symbols": [
+          {
+            "kind": "function",
+            "name": "api_key_unique_id",
+            "parent": "",
+            "signature": "api_key_unique_id(api_key: str) -> str"
+          },
+          {
+            "kind": "function",
+            "name": "async_migrate_entry",
+            "parent": "",
+            "signature": "async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool"
+          },
+          {
+            "kind": "function",
+            "name": "async_setup_entry",
+            "parent": "",
+            "signature": "async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool"
+          },
+          {
+            "kind": "function",
+            "name": "async_unload_entry",
+            "parent": "",
+            "signature": "async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool"
+          },
+          {
+            "kind": "function",
+            "name": "get_voices_service",
+            "parent": "",
+            "signature": "get_voices_service(call: ServiceCall) -> ServiceResponse"
+          }
+        ]
+      },
+      {
+        "path": "custom_components/elevenlabs_custom_tts/config_flow.py",
+        "symbols": [
+          {
+            "kind": "const",
+            "name": "PROFILE_NAME_KEY",
+            "parent": "",
+            "signature": "PROFILE_NAME_KEY = \"Profile Name\""
+          },
+          {
+            "kind": "const",
+            "name": "VOICE_ID_KEY",
+            "parent": "",
+            "signature": "VOICE_ID_KEY = \"Voice ID\""
+          },
+          {
+            "kind": "const",
+            "name": "MODEL_KEY",
+            "parent": "",
+            "signature": "MODEL_KEY = \"Model\""
+          },
+          {
+            "kind": "const",
+            "name": "STABILITY_KEY",
+            "parent": "",
+            "signature": "STABILITY_KEY = \"Voice Stability (0.0-1.0)\""
+          },
+          {
+            "kind": "const",
+            "name": "SIMILARITY_KEY",
+            "parent": "",
+            "signature": "SIMILARITY_KEY = \"Similarity Boost (0.0-1.0)\""
+          },
+          {
+            "kind": "const",
+            "name": "STYLE_KEY",
+            "parent": "",
+            "signature": "STYLE_KEY = \"Style Exaggeration (0.0-1.0)\""
+          },
+          {
+            "kind": "const",
+            "name": "SPEED_KEY",
+            "parent": "",
+            "signature": "SPEED_KEY = \"Speech Speed (0.25-4.0)\""
+          },
+          {
+            "kind": "const",
+            "name": "SPEAKER_BOOST_KEY",
+            "parent": "",
+            "signature": "SPEAKER_BOOST_KEY = \"Enable Speaker Boost\""
+          },
+          {
+            "kind": "const",
+            "name": "APPLY_TEXT_NORMALIZATION_KEY",
+            "parent": "",
+            "signature": "APPLY_TEXT_NORMALIZATION_KEY = \"Apply Text Normalization\""
+          },
+          {
+            "kind": "const",
+            "name": "USER_STEP_SCHEMA",
+            "parent": "",
+            "signature": "USER_STEP_SCHEMA = vol.Schema({vol.Required(CONF_API_KEY): str})"
+          },
+          {
+            "kind": "function",
+            "name": "validate_api_key",
+            "parent": "",
+            "signature": "validate_api_key(hass: HomeAssistant, api_key: str) -> str | None"
+          },
+          {
+            "kind": "function",
+            "name": "async_get_tts_models",
+            "parent": "",
+            "signature": "async_get_tts_models(hass: HomeAssistant, entry: ConfigEntry) -> list[str]"
+          },
+          {
+            "kind": "class",
+            "name": "ElevenLabsCustomTTSConfigFlow",
+            "parent": "",
+            "signature": "class ElevenLabsCustomTTSConfigFlow(ConfigFlow, domain=DOMAIN)"
+          },
+          {
+            "kind": "function",
+            "name": "async_get_options_flow",
+            "parent": "ElevenLabsCustomTTSConfigFlow",
+            "signature": "async_get_options_flow(config_entry: ConfigEntry) -> OptionsFlow"
+          },
+          {
+            "kind": "class",
+            "name": "ElevenLabsOptionsFlow",
+            "parent": "",
+            "signature": "class ElevenLabsOptionsFlow(OptionsFlow)"
+          },
+          {
+            "kind": "function",
+            "name": "async_step_init",
+            "parent": "ElevenLabsOptionsFlow",
+            "signature": "async_step_init(self, user_input: dict[str, Any] | None = None)"
+          },
+          {
+            "kind": "function",
+            "name": "async_step_add_profile",
+            "parent": "ElevenLabsOptionsFlow",
+            "signature": "async_step_add_profile(self, user_input: dict[str, Any] | None = None)"
+          },
+          {
+            "kind": "function",
+            "name": "async_step_modify_profile",
+            "parent": "ElevenLabsOptionsFlow",
+            "signature": "async_step_modify_profile(self, user_input: dict[str, Any] | None = None)"
+          },
+          {
+            "kind": "function",
+            "name": "async_step_edit_profile",
+            "parent": "ElevenLabsOptionsFlow",
+            "signature": "async_step_edit_profile(self, user_input: dict[str, Any] | None = None)"
+          },
+          {
+            "kind": "function",
+            "name": "async_step_delete_profile",
+            "parent": "ElevenLabsOptionsFlow",
+            "signature": "async_step_delete_profile(self, user_input: dict[str, Any] | None = None)"
+          }
+        ]
+      },
+      {
+        "path": "custom_components/elevenlabs_custom_tts/const.py",
+        "symbols": [
+          {
+            "kind": "const",
+            "name": "DOMAIN",
+            "parent": "",
+            "signature": "DOMAIN = \"elevenlabs_custom_tts\""
+          },
+          {
+            "kind": "const",
+            "name": "CONF_API_KEY",
+            "parent": "",
+            "signature": "CONF_API_KEY = \"api_key\""
+          },
+          {
+            "kind": "const",
+            "name": "SERVICE_GET_VOICES",
+            "parent": "",
+            "signature": "SERVICE_GET_VOICES = \"get_voices\""
+          },
+          {
+            "kind": "const",
+            "name": "SERVICE_GENERATE_VOICE",
+            "parent": "",
+            "signature": "SERVICE_GENERATE_VOICE = \"generate_voice\""
+          },
+          {
+            "kind": "const",
+            "name": "ATTR_TEXT",
+            "parent": "",
+            "signature": "ATTR_TEXT = \"text\""
+          },
+          {
+            "kind": "const",
+            "name": "ATTR_MODEL_ID",
+            "parent": "",
+            "signature": "ATTR_MODEL_ID = \"model_id\""
+          },
+          {
+            "kind": "const",
+            "name": "ATTR_VOICE_ID",
+            "parent": "",
+            "signature": "ATTR_VOICE_ID = \"voice_id\""
+          },
+          {
+            "kind": "const",
+            "name": "ATTR_VOICE",
+            "parent": "",
+            "signature": "ATTR_VOICE = \"voice\""
+          },
+          {
+            "kind": "const",
+            "name": "ATTR_PROFILE_NAME",
+            "parent": "",
+            "signature": "ATTR_PROFILE_NAME = \"profile_name\""
+          },
+          {
+            "kind": "const",
+            "name": "ATTR_STABILITY",
+            "parent": "",
+            "signature": "ATTR_STABILITY = \"stability\""
+          },
+          {
+            "kind": "const",
+            "name": "ATTR_USE_SPEAKER_BOOST",
+            "parent": "",
+            "signature": "ATTR_USE_SPEAKER_BOOST = \"use_speaker_boost\""
+          },
+          {
+            "kind": "const",
+            "name": "ATTR_SIMILARITY_BOOST",
+            "parent": "",
+            "signature": "ATTR_SIMILARITY_BOOST = \"similarity_boost\""
+          },
+          {
+            "kind": "const",
+            "name": "ATTR_STYLE",
+            "parent": "",
+            "signature": "ATTR_STYLE = \"style\""
+          },
+          {
+            "kind": "const",
+            "name": "ATTR_SPEED",
+            "parent": "",
+            "signature": "ATTR_SPEED = \"speed\""
+          },
+          {
+            "kind": "const",
+            "name": "ATTR_OUTPUT_PATH",
+            "parent": "",
+            "signature": "ATTR_OUTPUT_PATH = \"output_path\""
+          },
+          {
+            "kind": "const",
+            "name": "ATTR_APPLY_TEXT_NORMALIZATION",
+            "parent": "",
+            "signature": "ATTR_APPLY_TEXT_NORMALIZATION = \"apply_text_normalization\""
+          },
+          {
+            "kind": "const",
+            "name": "ATTR_VOICE_TYPE",
+            "parent": "",
+            "signature": "ATTR_VOICE_TYPE = \"voice_type\""
+          },
+          {
+            "kind": "const",
+            "name": "ATTR_SEARCH_TEXT",
+            "parent": "",
+            "signature": "ATTR_SEARCH_TEXT = \"search_text\""
+          },
+          {
+            "kind": "const",
+            "name": "ATTR_MEDIA_PLAYER_ENTITY",
+            "parent": "",
+            "signature": "ATTR_MEDIA_PLAYER_ENTITY = \"media_player_entity\""
+          },
+          {
+            "kind": "const",
+            "name": "DEFAULT_MODEL",
+            "parent": "",
+            "signature": "DEFAULT_MODEL = \"eleven_multilingual_v2\""
+          },
+          {
+            "kind": "const",
+            "name": "DEFAULT_STABILITY",
+            "parent": "",
+            "signature": "DEFAULT_STABILITY = 0.5"
+          },
+          {
+            "kind": "const",
+            "name": "DEFAULT_SIMILARITY_BOOST",
+            "parent": "",
+            "signature": "DEFAULT_SIMILARITY_BOOST = 0.75"
+          },
+          {
+            "kind": "const",
+            "name": "DEFAULT_STYLE",
+            "parent": "",
+            "signature": "DEFAULT_STYLE = 0.0"
+          },
+          {
+            "kind": "const",
+            "name": "DEFAULT_SPEED",
+            "parent": "",
+            "signature": "DEFAULT_SPEED = 1.0"
+          },
+          {
+            "kind": "const",
+            "name": "DEFAULT_USE_SPEAKER_BOOST",
+            "parent": "",
+            "signature": "DEFAULT_USE_SPEAKER_BOOST = True"
+          },
+          {
+            "kind": "const",
+            "name": "DEFAULT_APPLY_TEXT_NORMALIZATION",
+            "parent": "",
+            "signature": "DEFAULT_APPLY_TEXT_NORMALIZATION = \"auto\""
+          },
+          {
+            "kind": "const",
+            "name": "FALLBACK_MODELS",
+            "parent": "",
+            "signature": "FALLBACK_MODELS = ["
+          },
+          {
+            "kind": "const",
+            "name": "MODELS_WITHOUT_LANGUAGE_CODE",
+            "parent": "",
+            "signature": "MODELS_WITHOUT_LANGUAGE_CODE ="
+          },
+          {
+            "kind": "const",
+            "name": "TTS_TIMEOUT",
+            "parent": "",
+            "signature": "TTS_TIMEOUT = 60"
+          }
+        ]
+      },
+      {
+        "path": "custom_components/elevenlabs_custom_tts/tts.py",
+        "symbols": [
+          {
+            "kind": "const",
+            "name": "SUPPORT_LANGUAGES",
+            "parent": "",
+            "signature": "SUPPORT_LANGUAGES = [\"en\", \"es\", \"fr\", \"de\", \"it\", \"pt\", \"pl\", \"tr\", \"ru\", \"nl\", \"cs\", \"ar\", \"zh\", \"ja\", \"hu\", \"ko\"]"
+          },
+          {
+            "kind": "class",
+            "name": "ElevenLabsTTSProvider",
+            "parent": "",
+            "signature": "class ElevenLabsTTSProvider(TextToSpeechEntity)"
+          },
+          {
+            "kind": "function",
+            "name": "unique_id",
+            "parent": "ElevenLabsTTSProvider",
+            "signature": "unique_id(self) -> str"
+          },
+          {
+            "kind": "function",
+            "name": "default_language",
+            "parent": "ElevenLabsTTSProvider",
+            "signature": "default_language(self) -> str"
+          },
+          {
+            "kind": "function",
+            "name": "supported_languages",
+            "parent": "ElevenLabsTTSProvider",
+            "signature": "supported_languages(self) -> list[str]"
+          },
+          {
+            "kind": "function",
+            "name": "supported_options",
+            "parent": "ElevenLabsTTSProvider",
+            "signature": "supported_options(self) -> list[str]"
+          },
+          {
+            "kind": "function",
+            "name": "default_options",
+            "parent": "ElevenLabsTTSProvider",
+            "signature": "default_options(self) -> dict[str, Any]"
+          },
+          {
+            "kind": "function",
+            "name": "async_get_supported_voices",
+            "parent": "ElevenLabsTTSProvider",
+            "signature": "async_get_supported_voices(self, language: str) -> list[Voice]"
+          }
+        ]
+      }
+    ]
+  },
+  "tests": [
+    "test_integration.py",
+    "tests/__init__.py",
+    "tests/conftest.py",
+    "tests/test_integration_flow.py",
+    "tests/test_translations.py"
+  ],
+  "operations": [
+    ".github/workflows/release.yaml",
+    ".github/workflows/validate.yaml"
+  ],
+  "limitations": {
+    "unparsed_languages": [],
+    "excluded_dirs": [],
+    "code_map_truncated": false,
+    "code_map_symbols_capped": true,
+    "tracked_files_only": true
+  },
+  "generated": {
+    "source_commit": "2c40c85effa0b87278baa3ce3d21ac27a5fb625b",
+    "content_hash": "2779166772851d10",
+    "generator": "navgen"
+  }
+}
