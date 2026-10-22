@@ -48,12 +48,5 @@ FALLBACK_MODELS = [
     "eleven_flash_v2",
 ]
 
-# Models that reject the language_code parameter
-MODELS_WITHOUT_LANGUAGE_CODE = {
-    "eleven_multilingual_v2",
-    "eleven_multilingual_v1",
-    "eleven_monolingual_v1",
-}
-
 # Per-request timeout for audio generation (seconds)
 TTS_TIMEOUT = 60
