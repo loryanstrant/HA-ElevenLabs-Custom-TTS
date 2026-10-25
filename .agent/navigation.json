@@ -5,11 +5,11 @@
     "description": "An ElevenLabs TTS integration for Home Assistant that provides enhanced voice discovery and integrates with Home Assistant's native TTS platform.",
     "default_branch": "main",
     "languages": {
-      "Python": 9
+      "Python": 10
     },
     "topics": [],
     "licence": "MIT License",
-    "file_count": 22
+    "file_count": 23
   },
   "start_here": {
     "readme": "README.md",
@@ -22,7 +22,8 @@
       "pytest.ini"
     ],
     "source_roots": [
-      "custom_components"
+      "custom_components",
+      "scripts"
     ]
   },
   "documentation": [
@@ -56,7 +57,7 @@
     {
       "path": "README.md",
       "title": "HA-ElevenLabs-custom-TTS",
-      "lines": 475,
+      "lines": 476,
       "headings": [
         {
           "level": 3,
@@ -248,7 +249,8 @@
   ],
   "code": {
     "source_roots": [
-      "custom_components"
+      "custom_components",
+      "scripts"
     ],
     "symbol_source": "repomix (tree-sitter signatures)",
     "routes": [],
@@ -580,12 +582,6 @@
           },
           {
             "kind": "const",
-            "name": "MODELS_WITHOUT_LANGUAGE_CODE",
-            "parent": "",
-            "signature": "MODELS_WITHOUT_LANGUAGE_CODE ="
-          },
-          {
-            "kind": "const",
             "name": "TTS_TIMEOUT",
             "parent": "",
             "signature": "TTS_TIMEOUT = 60"
@@ -644,6 +640,41 @@
             "signature": "async_get_supported_voices(self, language: str) -> list[Voice]"
           }
         ]
+      },
+      {
+        "path": "scripts/probe_model_params.py",
+        "symbols": [
+          {
+            "kind": "const",
+            "name": "API",
+            "parent": "",
+            "signature": "API = \"https://api.elevenlabs.io\""
+          },
+          {
+            "kind": "const",
+            "name": "TEXT",
+            "parent": "",
+            "signature": "TEXT = \"Hi\""
+          },
+          {
+            "kind": "const",
+            "name": "OUTPUT_FORMAT",
+            "parent": "",
+            "signature": "OUTPUT_FORMAT = \"mp3_22050_32\""
+          },
+          {
+            "kind": "const",
+            "name": "VARIANTS",
+            "parent": "",
+            "signature": "VARIANTS ="
+          },
+          {
+            "kind": "function",
+            "name": "main",
+            "parent": "",
+            "signature": "main() -> None"
+          }
+        ]
       }
     ]
   },
@@ -666,8 +697,8 @@
     "tracked_files_only": true
   },
   "generated": {
-    "source_commit": "2c40c85effa0b87278baa3ce3d21ac27a5fb625b",
-    "content_hash": "2779166772851d10",
+    "source_commit": "c2a1592f36d846e4d7dddb7cdd7c62ee7667350c",
+    "content_hash": "7e6271b4b4db9eb6",
     "generator": "navgen"
   }
 }
