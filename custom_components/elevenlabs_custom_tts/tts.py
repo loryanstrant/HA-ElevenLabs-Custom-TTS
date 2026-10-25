@@ -24,7 +24,6 @@ from .const import (
     DEFAULT_SPEED,
     DEFAULT_USE_SPEAKER_BOOST,
     DEFAULT_APPLY_TEXT_NORMALIZATION,
-    MODELS_WITHOUT_LANGUAGE_CODE,
     TTS_TIMEOUT,
 )
 
@@ -217,9 +216,9 @@ class ElevenLabsTTSProvider(TextToSpeechEntity):
             "model_id": model_id,
             "voice_settings": voice_settings,
             "apply_text_normalization": apply_text_normalization,
+            # Every current TTS model accepts this (scripts/probe_model_params.py)
+            "language_code": language,
         }
-        if model_id not in MODELS_WITHOUT_LANGUAGE_CODE:
-            convert_params["language_code"] = language
         
         try:
             async with asyncio.timeout(TTS_TIMEOUT):
